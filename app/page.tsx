@@ -34,14 +34,8 @@ export default function LandingPage() {
             onClick={() => router.push('/login')}
             className="premium-button-primary px-10 py-4 text-lg group w-full sm:w-auto"
           >
-            Start Your Journey
+            Get Started
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-          </button>
-          <button 
-            onClick={() => router.push('/login')}
-            className="premium-button-secondary px-10 py-4 text-lg w-full sm:w-auto"
-          >
-            Explore Personas
           </button>
         </div>
 

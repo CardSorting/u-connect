@@ -119,11 +119,34 @@ exports.Prisma.PersonaScalarFieldEnum = {
   industries: 'industries',
   stagePreference: 'stagePreference',
   availability: 'availability',
+  capacity: 'capacity',
+  currentLoad: 'currentLoad',
   riskTolerance: 'riskTolerance',
   missionInterests: 'missionInterests',
   avatarUrl: 'avatarUrl',
   profileJson: 'profileJson',
+  isHighValue: 'isHighValue',
   createdAt: 'createdAt'
+};
+
+exports.Prisma.IntakeProfileScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  stageEvidence: 'stageEvidence',
+  commercializationBlocker: 'commercializationBlocker',
+  requestedOutcome: 'requestedOutcome',
+  technicalMaturity: 'technicalMaturity',
+  regulatoryExposure: 'regulatoryExposure',
+  fundingStatus: 'fundingStatus',
+  customerDiscoveryEvidence: 'customerDiscoveryEvidence',
+  introSensitivity: 'introSensitivity',
+  geographicRelevance: 'geographicRelevance',
+  urgencyReason: 'urgencyReason',
+  missingInfoFlags: 'missingInfoFlags',
+  readinessScore: 'readinessScore',
+  conversationId: 'conversationId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.ConversationScalarFieldEnum = {
@@ -132,6 +155,7 @@ exports.Prisma.ConversationScalarFieldEnum = {
   personaId: 'personaId',
   title: 'title',
   state: 'state',
+  readinessScore: 'readinessScore',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -147,17 +171,74 @@ exports.Prisma.MessageScalarFieldEnum = {
 exports.Prisma.MatchResultScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
-  conversationId: 'conversationId',
   personaId: 'personaId',
-  matchName: 'matchName',
-  matchType: 'matchType',
-  sector: 'sector',
-  startupStage: 'startupStage',
-  confidence: 'confidence',
-  explanation: 'explanation',
-  gaps: 'gaps',
-  nextStep: 'nextStep',
+  intakeId: 'intakeId',
+  score: 'score',
+  eligibilityScore: 'eligibilityScore',
+  readinessScore: 'readinessScore',
+  constraintFitScore: 'constraintFitScore',
+  expertiseFitScore: 'expertiseFitScore',
+  relationshipFitScore: 'relationshipFitScore',
+  timingFitScore: 'timingFitScore',
+  outcomeScore: 'outcomeScore',
+  reasons: 'reasons',
+  risks: 'risks',
+  rationale: 'rationale',
+  status: 'status',
+  revealAuthorizedAt: 'revealAuthorizedAt',
+  revealedAt: 'revealedAt',
+  revokedAt: 'revokedAt',
   rawJson: 'rawJson',
+  conversationId: 'conversationId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.MatchOutcomeScalarFieldEnum = {
+  id: 'id',
+  matchId: 'matchId',
+  introRequestedAt: 'introRequestedAt',
+  introApprovedAt: 'introApprovedAt',
+  meetingOccurredAt: 'meetingOccurredAt',
+  followUpOccurred: 'followUpOccurred',
+  result: 'result',
+  founderRating: 'founderRating',
+  expertRating: 'expertRating',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ReputationProfileScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  responseRate: 'responseRate',
+  meetingShowRate: 'meetingShowRate',
+  followThroughRate: 'followThroughRate',
+  introQualityScore: 'introQualityScore',
+  ecosystemContributionScore: 'ecosystemContributionScore',
+  complaintCount: 'complaintCount',
+  trustTier: 'trustTier',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.RevealAuditLogScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  matchId: 'matchId',
+  action: 'action',
+  metadata: 'metadata',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.AuditLogScalarFieldEnum = {
+  id: 'id',
+  actorId: 'actorId',
+  action: 'action',
+  resourceType: 'resourceType',
+  resourceId: 'resourceId',
+  metadata: 'metadata',
   createdAt: 'createdAt'
 };
 
@@ -170,15 +251,55 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
+exports.MatchStatus = exports.$Enums.MatchStatus = {
+  CANDIDATE: 'CANDIDATE',
+  SHORTLISTED: 'SHORTLISTED',
+  RECOMMENDED: 'RECOMMENDED',
+  PENDING_USER_CONFIRMATION: 'PENDING_USER_CONFIRMATION',
+  PENDING_CONCIERGE_REVIEW: 'PENDING_CONCIERGE_REVIEW',
+  PENDING_TARGET_APPROVAL: 'PENDING_TARGET_APPROVAL',
+  REVEALED: 'REVEALED',
+  INTRO_REQUESTED: 'INTRO_REQUESTED',
+  INTRO_ACCEPTED: 'INTRO_ACCEPTED',
+  MEETING_SCHEDULED: 'MEETING_SCHEDULED',
+  OUTCOME_RECORDED: 'OUTCOME_RECORDED',
+  DISMISSED: 'DISMISSED',
+  REVOKED: 'REVOKED'
+};
 
+exports.MatchOutcomeResult = exports.$Enums.MatchOutcomeResult = {
+  NO_RESPONSE: 'NO_RESPONSE',
+  DECLINED: 'DECLINED',
+  MEETING_ONLY: 'MEETING_ONLY',
+  ACTIVE_COLLABORATION: 'ACTIVE_COLLABORATION',
+  PILOT: 'PILOT',
+  INVESTMENT: 'INVESTMENT',
+  ADVISOR_RELATIONSHIP: 'ADVISOR_RELATIONSHIP',
+  PARTNERSHIP: 'PARTNERSHIP',
+  NO_SHOW: 'NO_SHOW',
+  BAD_FIT: 'BAD_FIT',
+  TRUST_VIOLATION: 'TRUST_VIOLATION'
+};
+
+exports.TrustTier = exports.$Enums.TrustTier = {
+  NEW: 'NEW',
+  VERIFIED: 'VERIFIED',
+  TRUSTED: 'TRUSTED',
+  RESTRICTED: 'RESTRICTED'
+};
 
 exports.Prisma.ModelName = {
   User: 'User',
   Session: 'Session',
   Persona: 'Persona',
+  IntakeProfile: 'IntakeProfile',
   Conversation: 'Conversation',
   Message: 'Message',
-  MatchResult: 'MatchResult'
+  MatchResult: 'MatchResult',
+  MatchOutcome: 'MatchOutcome',
+  ReputationProfile: 'ReputationProfile',
+  RevealAuditLog: 'RevealAuditLog',
+  AuditLog: 'AuditLog'
 };
 /**
  * Create the Client
@@ -219,7 +340,6 @@ const config = {
     "db"
   ],
   "activeProvider": "sqlite",
-  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
@@ -228,13 +348,13 @@ const config = {
       }
     }
   },
-  "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"../src/generated/client\"\n}\n\ndatasource db {\n  provider = \"sqlite\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel User {\n  id            String         @id @default(cuid())\n  name          String\n  email         String         @unique\n  roleType      String?\n  sessions      Session[]\n  conversations Conversation[]\n  matches       MatchResult[]\n  createdAt     DateTime       @default(now())\n  updatedAt     DateTime       @updatedAt\n}\n\nmodel Session {\n  id        String   @id @default(cuid())\n  userId    String\n  token     String   @unique\n  user      User     @relation(fields: [userId], references: [id])\n  createdAt DateTime @default(now())\n  expiresAt DateTime\n}\n\nmodel Persona {\n  id               String         @id @default(cuid())\n  name             String\n  personaType      String\n  title            String?\n  organization     String?\n  background       String\n  goals            String\n  skills           String\n  industries       String\n  stagePreference  String?\n  availability     String?\n  riskTolerance    String?\n  missionInterests String?\n  avatarUrl        String?\n  profileJson      String? // SQLite doesn't support Json type natively in Prisma well, String for JSON\n  conversations    Conversation[]\n  matches          MatchResult[]\n  createdAt        DateTime       @default(now())\n}\n\nmodel Conversation {\n  id        String        @id @default(cuid())\n  userId    String\n  personaId String?\n  title     String?\n  state     String        @default(\"intake\")\n  user      User          @relation(fields: [userId], references: [id])\n  persona   Persona?      @relation(fields: [personaId], references: [id])\n  messages  Message[]\n  matches   MatchResult[]\n  createdAt DateTime      @default(now())\n  updatedAt DateTime      @updatedAt\n}\n\nmodel Message {\n  id             String       @id @default(cuid())\n  conversationId String\n  role           String\n  content        String\n  conversation   Conversation @relation(fields: [conversationId], references: [id])\n  createdAt      DateTime     @default(now())\n}\n\nmodel MatchResult {\n  id             String       @id @default(cuid())\n  userId         String\n  conversationId String\n  personaId      String?\n  matchName      String\n  matchType      String\n  sector         String?\n  startupStage   String?\n  confidence     String?\n  explanation    String\n  gaps           String?\n  nextStep       String?\n  rawJson        String? // String for JSON\n  user           User         @relation(fields: [userId], references: [id])\n  conversation   Conversation @relation(fields: [conversationId], references: [id])\n  persona        Persona?     @relation(fields: [personaId], references: [id])\n  createdAt      DateTime     @default(now())\n}\n",
-  "inlineSchemaHash": "5a13c7970068bc1fab037197067d5e303a19fbd883b00623bee95c6b21dda3ec",
+  "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"../src/generated/client\"\n}\n\ndatasource db {\n  provider = \"sqlite\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel User {\n  id             String             @id @default(cuid())\n  name           String\n  email          String             @unique\n  roleType       String?\n  sessions       Session[]\n  conversations  Conversation[]\n  matches        MatchResult[]\n  reputation     ReputationProfile?\n  intakeProfiles IntakeProfile[]\n  auditLogs      RevealAuditLog[]\n  createdAt      DateTime           @default(now())\n  updatedAt      DateTime           @updatedAt\n}\n\nmodel Session {\n  id        String   @id @default(cuid())\n  userId    String\n  token     String   @unique\n  user      User     @relation(fields: [userId], references: [id])\n  createdAt DateTime @default(now())\n  expiresAt DateTime\n}\n\nmodel Persona {\n  id               String         @id @default(cuid())\n  name             String\n  personaType      String\n  title            String?\n  organization     String?\n  background       String\n  goals            String\n  skills           String\n  industries       String\n  stagePreference  String?\n  availability     String?\n  capacity         Int            @default(5) // Max concurrent intros\n  currentLoad      Int            @default(0)\n  riskTolerance    String?\n  missionInterests String?\n  avatarUrl        String?\n  profileJson      String? // SQLite doesn't support Json type natively in Prisma well, String for JSON\n  isHighValue      Boolean        @default(false) // Flag for Concierge review\n  conversations    Conversation[]\n  matches          MatchResult[]\n  createdAt        DateTime       @default(now())\n}\n\nmodel IntakeProfile {\n  id                        String   @id @default(cuid())\n  userId                    String\n  user                      User     @relation(fields: [userId], references: [id])\n  stageEvidence             String // idea, prototype, pilot, revenue, scale\n  commercializationBlocker  String\n  requestedOutcome          String\n  technicalMaturity         Float // 0-1\n  regulatoryExposure        String // JSON array string\n  fundingStatus             String\n  customerDiscoveryEvidence String\n  introSensitivity          String // low, medium, high\n  geographicRelevance       String // JSON array string\n  urgencyReason             String\n  missingInfoFlags          String // JSON array string\n  readinessScore            Float\n  conversationId            String?  @unique\n  createdAt                 DateTime @default(now())\n  updatedAt                 DateTime @updatedAt\n}\n\nmodel Conversation {\n  id             String        @id @default(cuid())\n  userId         String\n  personaId      String?\n  title          String?\n  state          String        @default(\"intake\")\n  readinessScore Float? // Cached readiness score\n  user           User          @relation(fields: [userId], references: [id])\n  persona        Persona?      @relation(fields: [personaId], references: [id])\n  messages       Message[]\n  matches        MatchResult[]\n  createdAt      DateTime      @default(now())\n  updatedAt      DateTime      @updatedAt\n}\n\nmodel Message {\n  id             String       @id @default(cuid())\n  conversationId String\n  role           String\n  content        String\n  conversation   Conversation @relation(fields: [conversationId], references: [id])\n  createdAt      DateTime     @default(now())\n}\n\nmodel MatchResult {\n  id        String  @id @default(cuid())\n  userId    String\n  personaId String\n  intakeId  String?\n\n  // Weighted Scoring Stack V2\n  score                Float // Final Match Score\n  eligibilityScore     Float @default(1.0) // Binary Gate\n  readinessScore       Float @default(1.0) // Binary Gate\n  constraintFitScore   Float @default(1.0)\n  expertiseFitScore    Float @default(1.0)\n  relationshipFitScore Float @default(1.0)\n  timingFitScore       Float @default(1.0)\n  outcomeScore         Float @default(1.0)\n\n  // Structured Evidence\n  reasons   String? // MatchReason[]\n  risks     String? // MatchRisk[]\n  rationale String? // Admin override rationale\n\n  status             MatchStatus @default(CANDIDATE)\n  revealAuthorizedAt DateTime?\n  revealedAt         DateTime?\n  revokedAt          DateTime?\n  rawJson            String? // For historical LLM output preservation\n\n  user           User          @relation(fields: [userId], references: [id])\n  persona        Persona?      @relation(fields: [personaId], references: [id])\n  conversation   Conversation? @relation(fields: [conversationId], references: [id])\n  conversationId String?\n  outcome        MatchOutcome?\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  @@unique([userId, personaId])\n  @@index([userId])\n  @@index([personaId])\n  @@index([status])\n}\n\nmodel MatchOutcome {\n  id                String             @id @default(cuid())\n  matchId           String             @unique\n  match             MatchResult        @relation(fields: [matchId], references: [id])\n  introRequestedAt  DateTime?\n  introApprovedAt   DateTime?\n  meetingOccurredAt DateTime?\n  followUpOccurred  Boolean            @default(false)\n  result            MatchOutcomeResult @default(NO_RESPONSE)\n  founderRating     Int?\n  expertRating      Int?\n  notes             String?\n  createdAt         DateTime           @default(now())\n  updatedAt         DateTime           @updatedAt\n}\n\nmodel ReputationProfile {\n  id                         String    @id @default(cuid())\n  userId                     String    @unique\n  user                       User      @relation(fields: [userId], references: [id])\n  responseRate               Float     @default(0)\n  meetingShowRate            Float     @default(0)\n  followThroughRate          Float     @default(0)\n  introQualityScore          Float     @default(0)\n  ecosystemContributionScore Float     @default(0)\n  complaintCount             Int       @default(0)\n  trustTier                  TrustTier @default(NEW)\n  createdAt                  DateTime  @default(now())\n  updatedAt                  DateTime  @updatedAt\n}\n\nmodel RevealAuditLog {\n  id        String   @id @default(cuid())\n  userId    String\n  user      User     @relation(fields: [userId], references: [id])\n  matchId   String\n  action    String // REVEAL, REVOKE, ACCESS_DENIED\n  metadata  String? // JSON string\n  createdAt DateTime @default(now())\n}\n\nmodel AuditLog {\n  id           String   @id @default(cuid())\n  actorId      String\n  action       String\n  resourceType String\n  resourceId   String?\n  metadata     String? // JSON string\n  createdAt    DateTime @default(now())\n}\n\nenum MatchStatus {\n  CANDIDATE\n  SHORTLISTED\n  RECOMMENDED\n  PENDING_USER_CONFIRMATION\n  PENDING_CONCIERGE_REVIEW\n  PENDING_TARGET_APPROVAL\n  REVEALED\n  INTRO_REQUESTED\n  INTRO_ACCEPTED\n  MEETING_SCHEDULED\n  OUTCOME_RECORDED\n  DISMISSED\n  REVOKED\n}\n\nenum MatchOutcomeResult {\n  NO_RESPONSE\n  DECLINED\n  MEETING_ONLY\n  ACTIVE_COLLABORATION\n  PILOT\n  INVESTMENT\n  ADVISOR_RELATIONSHIP\n  PARTNERSHIP\n  NO_SHOW\n  BAD_FIT\n  TRUST_VIOLATION\n}\n\nenum TrustTier {\n  NEW\n  VERIFIED\n  TRUSTED\n  RESTRICTED\n}\n",
+  "inlineSchemaHash": "656e5b3f45eb94c352af6663635e67b19ac360110f311bcfbfe5a17de53c2d77",
   "copyEngine": true
 }
 config.dirname = '/'
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"roleType\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"sessions\",\"kind\":\"object\",\"type\":\"Session\",\"relationName\":\"SessionToUser\"},{\"name\":\"conversations\",\"kind\":\"object\",\"type\":\"Conversation\",\"relationName\":\"ConversationToUser\"},{\"name\":\"matches\",\"kind\":\"object\",\"type\":\"MatchResult\",\"relationName\":\"MatchResultToUser\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Session\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"token\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"SessionToUser\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"expiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Persona\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"personaType\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"title\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"organization\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"background\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"goals\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"skills\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"industries\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"stagePreference\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"availability\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"riskTolerance\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"missionInterests\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"avatarUrl\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"profileJson\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"conversations\",\"kind\":\"object\",\"type\":\"Conversation\",\"relationName\":\"ConversationToPersona\"},{\"name\":\"matches\",\"kind\":\"object\",\"type\":\"MatchResult\",\"relationName\":\"MatchResultToPersona\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Conversation\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"personaId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"title\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"state\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"ConversationToUser\"},{\"name\":\"persona\",\"kind\":\"object\",\"type\":\"Persona\",\"relationName\":\"ConversationToPersona\"},{\"name\":\"messages\",\"kind\":\"object\",\"type\":\"Message\",\"relationName\":\"ConversationToMessage\"},{\"name\":\"matches\",\"kind\":\"object\",\"type\":\"MatchResult\",\"relationName\":\"ConversationToMatchResult\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Message\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"conversationId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"role\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"content\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"conversation\",\"kind\":\"object\",\"type\":\"Conversation\",\"relationName\":\"ConversationToMessage\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"MatchResult\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"conversationId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"personaId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"matchName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"matchType\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"sector\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"startupStage\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"confidence\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"explanation\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"gaps\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"nextStep\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"rawJson\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"MatchResultToUser\"},{\"name\":\"conversation\",\"kind\":\"object\",\"type\":\"Conversation\",\"relationName\":\"ConversationToMatchResult\"},{\"name\":\"persona\",\"kind\":\"object\",\"type\":\"Persona\",\"relationName\":\"MatchResultToPersona\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"roleType\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"sessions\",\"kind\":\"object\",\"type\":\"Session\",\"relationName\":\"SessionToUser\"},{\"name\":\"conversations\",\"kind\":\"object\",\"type\":\"Conversation\",\"relationName\":\"ConversationToUser\"},{\"name\":\"matches\",\"kind\":\"object\",\"type\":\"MatchResult\",\"relationName\":\"MatchResultToUser\"},{\"name\":\"reputation\",\"kind\":\"object\",\"type\":\"ReputationProfile\",\"relationName\":\"ReputationProfileToUser\"},{\"name\":\"intakeProfiles\",\"kind\":\"object\",\"type\":\"IntakeProfile\",\"relationName\":\"IntakeProfileToUser\"},{\"name\":\"auditLogs\",\"kind\":\"object\",\"type\":\"RevealAuditLog\",\"relationName\":\"RevealAuditLogToUser\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Session\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"token\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"SessionToUser\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"expiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Persona\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"personaType\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"title\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"organization\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"background\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"goals\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"skills\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"industries\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"stagePreference\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"availability\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"capacity\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"currentLoad\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"riskTolerance\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"missionInterests\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"avatarUrl\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"profileJson\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"isHighValue\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"conversations\",\"kind\":\"object\",\"type\":\"Conversation\",\"relationName\":\"ConversationToPersona\"},{\"name\":\"matches\",\"kind\":\"object\",\"type\":\"MatchResult\",\"relationName\":\"MatchResultToPersona\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"IntakeProfile\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"IntakeProfileToUser\"},{\"name\":\"stageEvidence\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"commercializationBlocker\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"requestedOutcome\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"technicalMaturity\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"regulatoryExposure\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"fundingStatus\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"customerDiscoveryEvidence\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"introSensitivity\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"geographicRelevance\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"urgencyReason\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"missingInfoFlags\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"readinessScore\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"conversationId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Conversation\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"personaId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"title\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"state\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"readinessScore\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"ConversationToUser\"},{\"name\":\"persona\",\"kind\":\"object\",\"type\":\"Persona\",\"relationName\":\"ConversationToPersona\"},{\"name\":\"messages\",\"kind\":\"object\",\"type\":\"Message\",\"relationName\":\"ConversationToMessage\"},{\"name\":\"matches\",\"kind\":\"object\",\"type\":\"MatchResult\",\"relationName\":\"ConversationToMatchResult\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Message\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"conversationId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"role\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"content\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"conversation\",\"kind\":\"object\",\"type\":\"Conversation\",\"relationName\":\"ConversationToMessage\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"MatchResult\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"personaId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"intakeId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"score\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"eligibilityScore\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"readinessScore\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"constraintFitScore\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"expertiseFitScore\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"relationshipFitScore\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"timingFitScore\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"outcomeScore\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"reasons\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"risks\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"rationale\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"MatchStatus\"},{\"name\":\"revealAuthorizedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"revealedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"revokedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"rawJson\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"MatchResultToUser\"},{\"name\":\"persona\",\"kind\":\"object\",\"type\":\"Persona\",\"relationName\":\"MatchResultToPersona\"},{\"name\":\"conversation\",\"kind\":\"object\",\"type\":\"Conversation\",\"relationName\":\"ConversationToMatchResult\"},{\"name\":\"conversationId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"outcome\",\"kind\":\"object\",\"type\":\"MatchOutcome\",\"relationName\":\"MatchOutcomeToMatchResult\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"MatchOutcome\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"matchId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"match\",\"kind\":\"object\",\"type\":\"MatchResult\",\"relationName\":\"MatchOutcomeToMatchResult\"},{\"name\":\"introRequestedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"introApprovedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"meetingOccurredAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"followUpOccurred\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"result\",\"kind\":\"enum\",\"type\":\"MatchOutcomeResult\"},{\"name\":\"founderRating\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"expertRating\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"notes\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"ReputationProfile\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"ReputationProfileToUser\"},{\"name\":\"responseRate\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"meetingShowRate\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"followThroughRate\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"introQualityScore\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"ecosystemContributionScore\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"complaintCount\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"trustTier\",\"kind\":\"enum\",\"type\":\"TrustTier\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"RevealAuditLog\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"RevealAuditLogToUser\"},{\"name\":\"matchId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"action\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"metadata\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"AuditLog\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"actorId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"action\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"resourceType\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"resourceId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"metadata\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
 defineDmmfProperty(exports.Prisma, config.runtimeDataModel)
 config.engineWasm = {
   getRuntime: async () => require('./query_engine_bg.js'),

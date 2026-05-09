@@ -16,6 +16,9 @@ model User {
   sessions  Session[]
   conversations Conversation[]
   matches   MatchResult[]
+  reputation ReputationProfile?
+  intakeProfiles IntakeProfile[]
+  auditLogs RevealAuditLog[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -41,13 +44,37 @@ model Persona {
   industries        String
   stagePreference   String?
   availability      String?
+  capacity          Int      @default(5) // Max concurrent intros
+  currentLoad       Int      @default(0)
   riskTolerance     String?
   missionInterests  String?
   avatarUrl         String?
   profileJson       String? // SQLite doesn't support Json type natively in Prisma well, String for JSON
+  isHighValue       Boolean  @default(false) // Flag for Concierge review
   conversations     Conversation[]
   matches           MatchResult[]
   createdAt         DateTime @default(now())
+}
+
+model IntakeProfile {
+  id                        String   @id @default(cuid())
+  userId                    String
+  user                      User     @relation(fields: [userId], references: [id])
+  stageEvidence             String   // idea, prototype, pilot, revenue, scale
+  commercializationBlocker  String
+  requestedOutcome          String
+  technicalMaturity         Float    // 0-1
+  regulatoryExposure        String   // JSON array string
+  fundingStatus             String
+  customerDiscoveryEvidence String
+  introSensitivity          String   // low, medium, high
+  geographicRelevance       String   // JSON array string
+  urgencyReason             String
+  missingInfoFlags          String   // JSON array string
+  readinessScore            Float
+  conversationId            String?  @unique
+  createdAt                 DateTime @default(now())
+  updatedAt                 DateTime @updatedAt
 }
 
 model Conversation {
@@ -56,6 +83,7 @@ model Conversation {
   personaId   String?
   title       String?
   state       String   @default("intake")
+  readinessScore Float?  // Cached readiness score
   user        User     @relation(fields: [userId], references: [id])
   persona     Persona? @relation(fields: [personaId], references: [id])
   messages    Message[]
@@ -74,21 +102,131 @@ model Message {
 }
 
 model MatchResult {
-  id             String   @id @default(cuid())
-  userId         String
-  conversationId String
-  personaId      String?
-  matchName      String
-  matchType      String
-  sector         String?
-  startupStage   String?
-  confidence     String?
-  explanation    String
-  gaps           String?
-  nextStep       String?
-  rawJson        String? // String for JSON
-  user           User @relation(fields: [userId], references: [id])
-  conversation   Conversation @relation(fields: [conversationId], references: [id])
-  persona        Persona? @relation(fields: [personaId], references: [id])
-  createdAt      DateTime @default(now())
+  id                 String      @id @default(cuid())
+  userId             String
+  personaId          String
+  intakeId           String?
+  
+  // Weighted Scoring Stack V2
+  score              Float       // Final Match Score
+  eligibilityScore   Float       @default(1.0) // Binary Gate
+  readinessScore     Float       @default(1.0) // Binary Gate
+  constraintFitScore Float       @default(1.0)
+  expertiseFitScore  Float       @default(1.0)
+  relationshipFitScore Float     @default(1.0)
+  timingFitScore     Float       @default(1.0)
+  outcomeScore       Float       @default(1.0)
+
+  // Structured Evidence
+  reasons            String?     // MatchReason[]
+  risks              String?     // MatchRisk[]
+  rationale          String?     // Admin override rationale
+  
+  status             MatchStatus @default(CANDIDATE)
+  revealAuthorizedAt DateTime?
+  revealedAt         DateTime?
+  revokedAt          DateTime?
+  rawJson            String?     // For historical LLM output preservation
+  
+  user               User        @relation(fields: [userId], references: [id])
+  persona            Persona?    @relation(fields: [personaId], references: [id])
+  conversation       Conversation? @relation(fields: [conversationId], references: [id])
+  conversationId     String?
+  outcome            MatchOutcome?
+  
+  createdAt          DateTime    @default(now())
+  updatedAt          DateTime    @updatedAt
+
+  @@unique([userId, personaId])
+  @@index([userId])
+  @@index([personaId])
+  @@index([status])
+}
+
+model MatchOutcome {
+  id                String             @id @default(cuid())
+  matchId           String             @unique
+  match             MatchResult        @relation(fields: [matchId], references: [id])
+  introRequestedAt  DateTime?
+  introApprovedAt   DateTime?
+  meetingOccurredAt DateTime?
+  followUpOccurred  Boolean            @default(false)
+  result            MatchOutcomeResult @default(NO_RESPONSE)
+  founderRating     Int?
+  expertRating      Int?
+  notes             String?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+}
+
+model ReputationProfile {
+  id                        String    @id @default(cuid())
+  userId                    String    @unique
+  user                      User      @relation(fields: [userId], references: [id])
+  responseRate              Float     @default(0)
+  meetingShowRate           Float     @default(0)
+  followThroughRate         Float     @default(0)
+  introQualityScore         Float     @default(0)
+  ecosystemContributionScore Float     @default(0)
+  complaintCount            Int       @default(0)
+  trustTier                 TrustTier @default(NEW)
+  createdAt                 DateTime  @default(now())
+  updatedAt                 DateTime  @updatedAt
+}
+
+model RevealAuditLog {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+  matchId      String
+  action       String   // REVEAL, REVOKE, ACCESS_DENIED
+  metadata     String?  // JSON string
+  createdAt    DateTime @default(now())
+}
+
+model AuditLog {
+  id           String   @id @default(cuid())
+  actorId      String
+  action       String
+  resourceType String
+  resourceId   String?
+  metadata     String?  // JSON string
+  createdAt    DateTime @default(now())
+}
+
+enum MatchStatus {
+  CANDIDATE
+  SHORTLISTED
+  RECOMMENDED
+  PENDING_USER_CONFIRMATION
+  PENDING_CONCIERGE_REVIEW
+  PENDING_TARGET_APPROVAL
+  REVEALED
+  INTRO_REQUESTED
+  INTRO_ACCEPTED
+  MEETING_SCHEDULED
+  OUTCOME_RECORDED
+  DISMISSED
+  REVOKED
+}
+
+enum MatchOutcomeResult {
+  NO_RESPONSE
+  DECLINED
+  MEETING_ONLY
+  ACTIVE_COLLABORATION
+  PILOT
+  INVESTMENT
+  ADVISOR_RELATIONSHIP
+  PARTNERSHIP
+  NO_SHOW
+  BAD_FIT
+  TRUST_VIOLATION
+}
+
+enum TrustTier {
+  NEW
+  VERIFIED
+  TRUSTED
+  RESTRICTED
 }

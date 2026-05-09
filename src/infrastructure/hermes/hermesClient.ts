@@ -40,3 +40,32 @@ export const createHermesChatCompletionStream = (messages: readonly ClientChatMe
     }),
   });
 };
+
+export const createHermesChatCompletion = async (messages: readonly ClientChatMessage[], systemPrompt?: string) => {
+  const config = getHermesConfig();
+  const requestMessages: ChatMessage[] = [
+    { role: "system", content: systemPrompt || LAUNCHHIVE_SYSTEM_PROMPT },
+    ...messages,
+  ];
+
+  const res = await fetch(`${config.apiBaseUrl}/chat/completions`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${config.apiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      model: config.model,
+      stream: false,
+      messages: requestMessages,
+      response_format: { type: "json_object" }
+    }),
+  });
+
+  if (!res.ok) {
+    throw new Error(`Hermes API error: ${res.statusText}`);
+  }
+
+  const data = await res.json();
+  return data.choices[0].message.content;
+};

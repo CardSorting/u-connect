@@ -22,7 +22,7 @@ export default function LoginPage() {
       });
 
       if (res.ok) {
-        router.push('/personas');
+        router.push('/dashboard');
       } else {
         alert('Login failed');
       }
@@ -86,7 +86,7 @@ export default function LoginPage() {
                 <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
               ) : (
                 <>
-                  Continue to Personas
+                  Continue to Dashboard
                   <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
                 </>
               )}

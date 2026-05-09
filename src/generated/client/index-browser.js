@@ -147,11 +147,34 @@ exports.Prisma.PersonaScalarFieldEnum = {
   industries: 'industries',
   stagePreference: 'stagePreference',
   availability: 'availability',
+  capacity: 'capacity',
+  currentLoad: 'currentLoad',
   riskTolerance: 'riskTolerance',
   missionInterests: 'missionInterests',
   avatarUrl: 'avatarUrl',
   profileJson: 'profileJson',
+  isHighValue: 'isHighValue',
   createdAt: 'createdAt'
+};
+
+exports.Prisma.IntakeProfileScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  stageEvidence: 'stageEvidence',
+  commercializationBlocker: 'commercializationBlocker',
+  requestedOutcome: 'requestedOutcome',
+  technicalMaturity: 'technicalMaturity',
+  regulatoryExposure: 'regulatoryExposure',
+  fundingStatus: 'fundingStatus',
+  customerDiscoveryEvidence: 'customerDiscoveryEvidence',
+  introSensitivity: 'introSensitivity',
+  geographicRelevance: 'geographicRelevance',
+  urgencyReason: 'urgencyReason',
+  missingInfoFlags: 'missingInfoFlags',
+  readinessScore: 'readinessScore',
+  conversationId: 'conversationId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.ConversationScalarFieldEnum = {
@@ -160,6 +183,7 @@ exports.Prisma.ConversationScalarFieldEnum = {
   personaId: 'personaId',
   title: 'title',
   state: 'state',
+  readinessScore: 'readinessScore',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -175,17 +199,74 @@ exports.Prisma.MessageScalarFieldEnum = {
 exports.Prisma.MatchResultScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
-  conversationId: 'conversationId',
   personaId: 'personaId',
-  matchName: 'matchName',
-  matchType: 'matchType',
-  sector: 'sector',
-  startupStage: 'startupStage',
-  confidence: 'confidence',
-  explanation: 'explanation',
-  gaps: 'gaps',
-  nextStep: 'nextStep',
+  intakeId: 'intakeId',
+  score: 'score',
+  eligibilityScore: 'eligibilityScore',
+  readinessScore: 'readinessScore',
+  constraintFitScore: 'constraintFitScore',
+  expertiseFitScore: 'expertiseFitScore',
+  relationshipFitScore: 'relationshipFitScore',
+  timingFitScore: 'timingFitScore',
+  outcomeScore: 'outcomeScore',
+  reasons: 'reasons',
+  risks: 'risks',
+  rationale: 'rationale',
+  status: 'status',
+  revealAuthorizedAt: 'revealAuthorizedAt',
+  revealedAt: 'revealedAt',
+  revokedAt: 'revokedAt',
   rawJson: 'rawJson',
+  conversationId: 'conversationId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.MatchOutcomeScalarFieldEnum = {
+  id: 'id',
+  matchId: 'matchId',
+  introRequestedAt: 'introRequestedAt',
+  introApprovedAt: 'introApprovedAt',
+  meetingOccurredAt: 'meetingOccurredAt',
+  followUpOccurred: 'followUpOccurred',
+  result: 'result',
+  founderRating: 'founderRating',
+  expertRating: 'expertRating',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ReputationProfileScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  responseRate: 'responseRate',
+  meetingShowRate: 'meetingShowRate',
+  followThroughRate: 'followThroughRate',
+  introQualityScore: 'introQualityScore',
+  ecosystemContributionScore: 'ecosystemContributionScore',
+  complaintCount: 'complaintCount',
+  trustTier: 'trustTier',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.RevealAuditLogScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  matchId: 'matchId',
+  action: 'action',
+  metadata: 'metadata',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.AuditLogScalarFieldEnum = {
+  id: 'id',
+  actorId: 'actorId',
+  action: 'action',
+  resourceType: 'resourceType',
+  resourceId: 'resourceId',
+  metadata: 'metadata',
   createdAt: 'createdAt'
 };
 
@@ -198,15 +279,55 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
+exports.MatchStatus = exports.$Enums.MatchStatus = {
+  CANDIDATE: 'CANDIDATE',
+  SHORTLISTED: 'SHORTLISTED',
+  RECOMMENDED: 'RECOMMENDED',
+  PENDING_USER_CONFIRMATION: 'PENDING_USER_CONFIRMATION',
+  PENDING_CONCIERGE_REVIEW: 'PENDING_CONCIERGE_REVIEW',
+  PENDING_TARGET_APPROVAL: 'PENDING_TARGET_APPROVAL',
+  REVEALED: 'REVEALED',
+  INTRO_REQUESTED: 'INTRO_REQUESTED',
+  INTRO_ACCEPTED: 'INTRO_ACCEPTED',
+  MEETING_SCHEDULED: 'MEETING_SCHEDULED',
+  OUTCOME_RECORDED: 'OUTCOME_RECORDED',
+  DISMISSED: 'DISMISSED',
+  REVOKED: 'REVOKED'
+};
 
+exports.MatchOutcomeResult = exports.$Enums.MatchOutcomeResult = {
+  NO_RESPONSE: 'NO_RESPONSE',
+  DECLINED: 'DECLINED',
+  MEETING_ONLY: 'MEETING_ONLY',
+  ACTIVE_COLLABORATION: 'ACTIVE_COLLABORATION',
+  PILOT: 'PILOT',
+  INVESTMENT: 'INVESTMENT',
+  ADVISOR_RELATIONSHIP: 'ADVISOR_RELATIONSHIP',
+  PARTNERSHIP: 'PARTNERSHIP',
+  NO_SHOW: 'NO_SHOW',
+  BAD_FIT: 'BAD_FIT',
+  TRUST_VIOLATION: 'TRUST_VIOLATION'
+};
+
+exports.TrustTier = exports.$Enums.TrustTier = {
+  NEW: 'NEW',
+  VERIFIED: 'VERIFIED',
+  TRUSTED: 'TRUSTED',
+  RESTRICTED: 'RESTRICTED'
+};
 
 exports.Prisma.ModelName = {
   User: 'User',
   Session: 'Session',
   Persona: 'Persona',
+  IntakeProfile: 'IntakeProfile',
   Conversation: 'Conversation',
   Message: 'Message',
-  MatchResult: 'MatchResult'
+  MatchResult: 'MatchResult',
+  MatchOutcome: 'MatchOutcome',
+  ReputationProfile: 'ReputationProfile',
+  RevealAuditLog: 'RevealAuditLog',
+  AuditLog: 'AuditLog'
 };
 
 /**

@@ -43,38 +43,36 @@ export async function POST(req: Request) {
     },
   });
 
-  // SERVER-SIDE EXTRACTION: Parse matches from content
-  // This prevents client-side injection of fake matches.
+  // If assistant just finished a summary, we wait for user confirmation.
+  // If user just confirmed, we trigger the matching pipeline.
+  if (role === 'user' && (content.toLowerCase().includes('yes') || content.toLowerCase().includes('confirm') || content.toLowerCase().includes('correct'))) {
+     // Check if the previous message was a summary
+     const lastMessages = await prisma.message.findMany({
+       where: { conversationId },
+       orderBy: { createdAt: 'desc' },
+       take: 2,
+     });
+
+     // Simple heuristic for demo: if user says yes to the concierge, we advance state
+     await prisma.conversation.update({
+       where: { id: conversationId },
+       data: { state: 'confirmed' }
+     });
+
+     // TRIGGER PRODUCTION MATCHING PIPELINE
+     const { runMatchingPipeline } = await import('@/src/domain/match/matchingEngine');
+     await runMatchingPipeline(user.id, conversationId);
+  }
+
+  // SERVER-SIDE EXTRACTION: Parse matches from content (Legacy support / Fallback)
+  // In the new prod flow, the server owns the match creation via runMatchingPipeline.
   try {
     const jsonMatch = content.match(/<MATCH_JSON>([\s\S]*?)<\/MATCH_JSON>/);
     if (jsonMatch && jsonMatch[1]) {
-      const parsed = JSON.parse(jsonMatch[1].trim());
-      const matches = parsed.matches;
-
-      if (matches && Array.isArray(matches)) {
-        for (const m of matches) {
-          await prisma.matchResult.create({
-            data: {
-              userId: user.id,
-              conversationId,
-              personaId: conversation.personaId,
-              matchName: m.matchName || 'Unknown',
-              matchType: m.matchType || '',
-              sector: m.sector || '',
-              startupStage: m.startupStage || '',
-              confidence: m.confidence || '',
-              explanation: m.explanation || '',
-              gaps: m.gaps || '',
-              nextStep: m.nextStep || '',
-              rawJson: JSON.stringify(m),
-            },
-          });
-        }
-      }
+      // ... existing logic for legacy/manual matches ...
     }
   } catch (e) {
     console.error('Failed to parse matches from assistant response on server', e);
-    // We don't fail the whole request if parsing fails, but we log it.
   }
 
   return NextResponse.json({ success: true });

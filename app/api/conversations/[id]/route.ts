@@ -2,7 +2,7 @@ import { prisma } from '@/src/infrastructure/db/prisma';
 import { getCurrentUser } from '@/src/infrastructure/auth/session';
 import { NextResponse } from 'next/server';
 
-export async function GET(req: Request, { params }: { params: { id: string } }) {
+export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const user = await getCurrentUser();
   if (!user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
