@@ -2,6 +2,21 @@ import { prisma } from '@/src/infrastructure/db/prisma';
 import { getCurrentUser } from '@/src/infrastructure/auth/session';
 import { NextResponse } from 'next/server';
 
+export async function GET() {
+  const user = await getCurrentUser();
+  if (!user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  const conversations = await prisma.conversation.findMany({
+    where: { userId: user.id },
+    orderBy: { updatedAt: 'desc' },
+    include: { persona: true }
+  });
+
+  return NextResponse.json(conversations);
+}
+
 export async function POST(req: Request) {
   const user = await getCurrentUser();
   if (!user) {
@@ -25,9 +40,6 @@ export async function POST(req: Request) {
       state: 'intake',
     },
   });
-
-  // If there's a persona, we might want to add a hidden context message
-  // but we can also just handle that in the /api/chat logic when it sees the personaId.
 
   return NextResponse.json(conversation);
 }
