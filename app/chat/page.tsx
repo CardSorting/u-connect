@@ -19,6 +19,22 @@ function ChatContent() {
   const [persona, setPersona] = useState<Persona | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  const currentStepMatch = messages
+    .filter(m => m.role === 'assistant')
+    .map(m => m.content.match(/\[STATUS: SCREENING_STEP_(\d)\]/)?.[1])
+    .filter(Boolean)
+    .pop();
+  
+  const currentStep = currentStepMatch ? parseInt(currentStepMatch) : 1;
+
+  const wizardSteps = [
+    { num: 1, label: "Founder" },
+    { num: 2, label: "Problem" },
+    { num: 3, label: "Solution" },
+    { num: 4, label: "Traction" },
+    { num: 5, label: "Ecosystem" },
+  ];
+
   useEffect(() => {
     if (!conversationId) {
       router.push('/personas');
@@ -43,7 +59,7 @@ function ChatContent() {
           setPersona(data.persona);
           
           if (data.messages.length === 0) {
-             const greeting = "Discovery Concierge online. I’m here to align your commercialization goals with the Utah ecosystem. What big challenge are you solving today?";
+             const greeting = "Welcome to LaunchHive! I'm your Discovery Concierge. I'll be guiding you through a brief, conversational application so we can match you with the right ecosystem resources. To kick things off—could you introduce yourself and your team? What's your background, and what unique insight brought you here? [STATUS: SCREENING_STEP_1]";
              setMessages([{ role: 'assistant', content: greeting }]);
              fetch('/api/messages', {
               method: 'POST',
@@ -167,6 +183,47 @@ function ChatContent() {
         </button>
       </header>
 
+      {/* Global Wizard Navigation (Industry Standard Pattern) */}
+      <div className="bg-slate-900/60 border-b border-white/5 py-3 px-6 shrink-0 z-10 backdrop-blur-md relative shadow-xl">
+        <div className="max-w-3xl mx-auto">
+          <div className="flex items-center justify-between gap-2 relative">
+            {/* Background Line */}
+            <div className="absolute top-3 left-0 w-full h-0.5 bg-slate-800 -z-10 -translate-y-1/2" />
+            
+            {wizardSteps.map((step) => {
+              const isPast = currentStep > step.num;
+              const isCurrent = currentStep === step.num;
+              
+              return (
+                <div key={step.num} className="flex flex-col items-center flex-1 relative group">
+                  {/* Active Line Fill */}
+                  {step.num !== 1 && (
+                    <div 
+                      className="absolute top-3 right-1/2 w-full h-0.5 -translate-y-1/2 -z-10 transition-colors duration-700 ease-in-out bg-emerald-500"
+                      style={{ opacity: currentStep >= step.num ? 1 : 0 }}
+                    />
+                  )}
+                  
+                  <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold border-2 transition-all duration-500 shadow-sm ${
+                    isPast ? 'bg-emerald-500 border-emerald-500 text-white' :
+                    isCurrent ? 'bg-black border-emerald-400 text-emerald-400 shadow-[0_0_15px_rgba(52,211,153,0.3)] scale-110' :
+                    'bg-slate-900 border-slate-700 text-slate-500'
+                  }`}>
+                    {isPast ? <CheckCircle2 className="w-3 h-3" /> : step.num}
+                  </div>
+                  <span className={`text-[9px] mt-1.5 font-bold uppercase tracking-wider transition-colors duration-500 ${
+                    isCurrent ? 'text-emerald-400' : 
+                    isPast ? 'text-slate-300' : 'text-slate-600'
+                  }`}>
+                    {step.label}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
       <div className="flex-1 overflow-y-auto p-6 space-y-6 scrollbar-hide">
         <div className="max-w-3xl mx-auto space-y-6">
           {messages.map((m, i) => (
@@ -204,6 +261,37 @@ function ChatContent() {
                   {/* Demo-Optimized Signals */}
                   {m.role === 'assistant' && (
                     <div className="space-y-3 mt-3">
+                      {m.content.match(/\[STATUS: SCREENING_STEP_(\d)\]/) && (() => {
+                        const step = m.content.match(/\[STATUS: SCREENING_STEP_(\d)\]/)?.[1];
+                        const labels: Record<string, string> = {
+                          "1": "The Founder & Insight",
+                          "2": "The Core Problem",
+                          "3": "Solution & Technology",
+                          "4": "Traction & Blockers",
+                          "5": "Ecosystem Synergy"
+                        };
+                        const label = step ? labels[step] : "Discovery";
+                        
+                        return (
+                          <div className="p-4 rounded-xl bg-blue-500/10 border border-blue-500/20 flex gap-4 items-start w-full max-w-sm">
+                            <Target className="w-5 h-5 text-blue-400 shrink-0 mt-0.5" />
+                            <div className="flex-1 w-full">
+                              <div className="flex justify-between items-end mb-1">
+                                <p className="text-[10px] font-bold text-blue-300 uppercase tracking-wider">Discovery Phase</p>
+                                <p className="text-[10px] font-mono text-blue-400">{step}/5</p>
+                              </div>
+                              <p className="text-xs text-slate-200 font-medium mb-3">{label}</p>
+                              <div className="w-full h-1.5 bg-blue-900/40 rounded-full overflow-hidden">
+                                <div 
+                                  className="h-full bg-blue-500 rounded-full transition-all duration-1000 ease-out" 
+                                  style={{ width: `${(parseInt(step || '1') / 5) * 100}%` }} 
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })()}
+
                       {m.content.includes('[PREVIEW:') && (
                         <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center gap-3">
                           <Eye className="w-4 h-4 text-emerald-400 shrink-0" />
