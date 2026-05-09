@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { Send, User, Bot, Loader2, Sparkles, RefreshCcw, ChevronLeft, ShieldCheck, AlertTriangle, ShieldAlert, CheckCircle2, Info, FastForward, XCircle, Eye, Zap, BookOpen, Target, UserCheck } from 'lucide-react';
+import { Send, User, Bot, Loader2, Sparkles, RefreshCcw, ChevronLeft, ShieldCheck, AlertTriangle, ShieldAlert, CheckCircle2, Info, FastForward, XCircle, Eye, Zap, BookOpen, Target, UserCheck, Compass } from 'lucide-react';
 import { readOpenAIStream } from '@/src/utils/openAIStream';
 import { ClientChatMessage } from '@/src/domain/chat/types';
 import type { Persona } from '@/src/generated/client';
@@ -43,7 +43,7 @@ function ChatContent() {
           setPersona(data.persona);
           
           if (data.messages.length === 0) {
-             const greeting = "Forensic Concierge online. I am auditing your commercialization alpha for ecosystem alignment. What is the primary technical or business blocker you are facing today?";
+             const greeting = "Discovery Concierge online. I’m here to align your commercialization goals with the Utah ecosystem. What big challenge are you solving today?";
              setMessages([{ role: 'assistant', content: greeting }]);
              fetch('/api/messages', {
               method: 'POST',
@@ -143,19 +143,19 @@ function ChatContent() {
           </button>
           <div>
             <h1 className="font-bold tracking-tight text-white flex items-center gap-2 text-sm sm:text-base">
-              <ShieldCheck className="w-4 h-4 text-indigo-400" />
-              Forensic Concierge
+              <Compass className="w-4 h-4 text-indigo-400" />
+              Discovery Concierge
             </h1>
             {persona && (
               <p className="text-[10px] text-indigo-400 font-medium uppercase tracking-widest">
-                Targeting: {persona.name}
+                Journey: {persona.name}
               </p>
             )}
           </div>
         </div>
         <button 
           onClick={() => router.push('/matches')}
-          className="px-4 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold border border-slate-700 transition-all"
+          className="px-4 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold shadow-lg shadow-indigo-500/20 transition-all"
         >
           View Matches
         </button>
@@ -195,37 +195,17 @@ function ChatContent() {
                       .trim()}
                   </p>
                   
-                  {/* Forensic Administrative Signals */}
+                  {/* Demo-Optimized Signals */}
                   {m.role === 'assistant' && (
                     <div className="space-y-3 mt-3">
-                      {m.content.includes('[DIRECTIVE: MATCH_ANTICIPATION:') && (
+                      {m.content.includes('[PREVIEW:') && (
                         <div className="p-3 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center gap-3">
-                          <Target className="w-4 h-4 text-indigo-400 shrink-0" />
+                          <Eye className="w-4 h-4 text-indigo-400 shrink-0" />
                           <div>
-                            <p className="text-[10px] font-bold text-indigo-300 uppercase tracking-wider">Predictive Alignment</p>
+                            <p className="text-[10px] font-bold text-indigo-300 uppercase tracking-wider">Opportunity Detected</p>
                             <p className="text-[10px] text-slate-400 leading-tight">
-                              Trending toward role: <span className="text-indigo-200 font-bold">{m.content.match(/\[DIRECTIVE: MATCH_ANTICIPATION: (.*?)\]/)?.[1]}</span>
+                              Initial fit identified: <span className="text-indigo-200 font-bold">{m.content.match(/\[PREVIEW: (.*?)\]/)?.[1]}</span>
                             </p>
-                          </div>
-                        </div>
-                      )}
-
-                      {m.content.includes('[STATUS: CONCIERGE_HANDOVER]') && (
-                        <div className="p-3 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center gap-3">
-                          <UserCheck className="w-4 h-4 text-purple-400 shrink-0" />
-                          <div>
-                            <p className="text-[10px] font-bold text-purple-300 uppercase tracking-wider">Concierge Handover</p>
-                            <p className="text-[10px] text-slate-400 leading-tight">High-value complexity detected. Admin oversight initialized.</p>
-                          </div>
-                        </div>
-                      )}
-
-                      {m.content.includes('[DIRECTIVE: NURTURE]') && (
-                        <div className="p-3 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center gap-3">
-                          <BookOpen className="w-4 h-4 text-blue-400 shrink-0" />
-                          <div>
-                            <p className="text-[10px] font-bold text-blue-300 uppercase tracking-wider">Readiness Roadmap</p>
-                            <p className="text-[10px] text-slate-400 leading-tight">Strategic gaps identified. Roadmap generated below.</p>
                           </div>
                         </div>
                       )}
@@ -234,8 +214,8 @@ function ChatContent() {
                         <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center gap-3">
                           <FastForward className="w-4 h-4 text-amber-400 shrink-0" />
                           <div>
-                            <p className="text-[10px] font-bold text-amber-300 uppercase tracking-wider">Velocity Acceleration</p>
-                            <p className="text-[10px] text-slate-400 leading-tight">High fidelity detected. Fast-tracking to matches.</p>
+                            <p className="text-[10px] font-bold text-amber-300 uppercase tracking-wider">Discovery Accelerated</p>
+                            <p className="text-[10px] text-slate-400 leading-tight">Matching protocol fast-tracked for maximum demo velocity.</p>
                           </div>
                         </div>
                       )}
@@ -244,8 +224,8 @@ function ChatContent() {
                         <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center gap-3">
                           <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
                           <div>
-                            <p className="text-[10px] font-bold text-emerald-300 uppercase tracking-wider">Audit Complete</p>
-                            <p className="text-[10px] text-slate-400 leading-tight">Forensic intake successful. Pipeline ready.</p>
+                            <p className="text-[10px] font-bold text-emerald-300 uppercase tracking-wider">Alignment Verified</p>
+                            <p className="text-[10px] text-slate-400 leading-tight">Matches are now live in your dashboard.</p>
                           </div>
                         </div>
                       )}
@@ -262,8 +242,8 @@ function ChatContent() {
               </div>
               <div className="px-5 py-3 rounded-2xl bg-slate-900/60 border border-slate-800 text-slate-400 italic text-sm">
                 <span className="flex items-center gap-2">
-                  <Sparkles className="w-3 h-3 text-indigo-400 animate-pulse" />
-                  Forensic audit in progress...
+                  <Compass className="w-3 h-3 text-indigo-400 animate-pulse" />
+                  Mapping Utah deep-tech alignment...
                 </span>
               </div>
             </div>
@@ -277,7 +257,7 @@ function ChatContent() {
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder={isLoading ? "Auditor is analyzing alpha..." : "Type your evidence or blockers..."}
+            placeholder={isLoading ? "Discovery in progress..." : "Tell me about your blocker..."}
             disabled={isLoading}
             className="w-full bg-slate-900/80 border border-slate-800 rounded-2xl py-4 pl-5 pr-14 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all text-white placeholder:text-slate-600 shadow-2xl"
           />
