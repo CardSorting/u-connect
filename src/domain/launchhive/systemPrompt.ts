@@ -37,9 +37,9 @@ Use this investigation ladder, one question at a time:
 Type-specific tailoring:
 - Venture: focus on customer pain, product stage, technical proof, funding, customer discovery, regulatory risk, and the one connection that changes the next 90 days.
 - Operator: focus on operating scope, functional strengths, stage preference, time capacity, and examples of building or fixing systems.
-- Mentor / Subject-Matter Expert: focus on narrow expertise, founder stage preference, advisory style, conflict sensitivity, and a concrete example of helping a team through a blocker.
+- Mentor / Subject-Matter Expert: focus on narrow expertise, venture stage preference, advisory style, conflict sensitivity, and a concrete example of helping a team through a blocker.
 - Service Provider: focus on service category, ideal client readiness, proof of outcomes, conflicts, and whether they should be recommended as help or kept as a resource.
-- Venture capital / funder profile: focus on check size, thesis, stage, decision process, proof needed, and warm-intro constraints.
+- Capital provider profile: focus on check size, thesis, stage, decision process, proof needed, and warm-intro constraints.
 
 If their answer is surface-level, DIG DEEPER with a single plain-English follow-up, such as:
 - "Could you give me one example of that?"

@@ -20,17 +20,17 @@ export default function LandingPage() {
           <Sparkles className="w-4 h-4" />
           The Utah Deep-Tech Matchmaker
         </div>
-        
+
         <h1 className="text-6xl md:text-8xl font-black mb-6 tracking-tighter leading-tight animate-in fade-in slide-in-from-bottom-8 duration-1000">
           Scale Your <span className="text-gradient">Impact</span> <br /> in the Hive.
         </h1>
-        
+
         <p className="text-xl text-slate-400 max-w-2xl mx-auto mb-12 leading-relaxed animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-200">
           LaunchHive bridges the gap between breakthrough research and commercial reality. Discover your next advisory, operational, or technical role in Utah&apos;s elite startup ecosystem.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-6 animate-in fade-in slide-in-from-bottom-16 duration-1000 delay-300">
-          <button 
+          <button
             onClick={() => router.push('/login')}
             className="premium-button-primary px-10 py-4 text-lg group w-full sm:w-auto"
           >
@@ -42,7 +42,7 @@ export default function LandingPage() {
         {/* Stats / Proof */}
         <div className="mt-32 grid grid-cols-2 md:grid-cols-4 gap-8 border-y border-white/5 py-12 animate-in fade-in duration-1000 delay-500">
           <Stat label="University Partners" value="3+" />
-          <Stat label="Demo Personas" value="6" />
+          <Stat label="Demo Profiles" value="5" />
           <Stat label="Active Matches" value="50+" />
           <Stat label="Deep Tech Sectors" value="12" />
         </div>
@@ -51,17 +51,17 @@ export default function LandingPage() {
       {/* Features */}
       <section className="max-w-7xl mx-auto px-6 py-20">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <Feature 
+          <Feature
             icon={<Target className="w-6 h-6" />}
             title="Precision Matching"
             description="Our AI concierge analyzes your background, goals, and risk tolerance to find the perfect commercialization fit."
           />
-          <Feature 
+          <Feature
             icon={<Shield className="w-6 h-6" />}
             title="Utah Ecosystem"
             description="Built specifically for the University of Utah, BYU, and USU research pipelines."
           />
-          <Feature 
+          <Feature
             icon={<Zap className="w-6 h-6" />}
             title="Local Intelligence"
             description="Powered by Hermes Agent runtime, ensuring all your data stays local and secure on your machine."

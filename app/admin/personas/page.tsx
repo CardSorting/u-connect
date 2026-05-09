@@ -5,24 +5,25 @@ import {
   AlertCircle,
   Briefcase,
   CheckCircle2,
-  GraduationCap,
   Loader2,
   Megaphone,
+  Microscope,
   RefreshCw,
   Search,
   Shield,
   User,
   Users,
+  Wrench,
 } from "lucide-react";
 import type { Persona } from "@/src/generated/client";
+import { getPersonaTypeLabel, normalizePersonaType, PERSONA_TYPE } from "@/src/domain/persona/taxonomy";
 
 const iconMap: Record<string, React.ComponentType<{ size?: number; className?: string }>> = {
-  operator: Briefcase,
-  student: GraduationCap,
-  founder: Briefcase,
-  advisor: Megaphone,
-  executive: Shield,
-  mentor: Megaphone,
+  [PERSONA_TYPE.OPERATOR]: Briefcase,
+  [PERSONA_TYPE.MENTOR]: Megaphone,
+  [PERSONA_TYPE.SUBJECT_MATTER_EXPERT]: Microscope,
+  [PERSONA_TYPE.VENTURE]: Briefcase,
+  [PERSONA_TYPE.SERVICE_PROVIDER]: Wrench,
 };
 
 export default function AdminPersonasPage() {
@@ -107,7 +108,7 @@ export default function AdminPersonasPage() {
         <div>
           <h2 className="text-3xl font-bold tracking-tight text-hive-white">Ecosystem Directory</h2>
           <p className="text-hive-white/60 mt-2 text-lg">
-            Review the operators, mentors, executives, and subject-matter experts available for matching.
+            Review the operators, mentors, subject-matter experts, ventures, and service providers available for matching.
           </p>
         </div>
         <button
@@ -163,7 +164,9 @@ export default function AdminPersonasPage() {
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
           {filteredPersonas.map((persona) => {
-            const Icon = iconMap[persona.personaType?.toLowerCase()] || User;
+            const personaType = normalizePersonaType(persona.personaType);
+            const personaTypeLabel = getPersonaTypeLabel(persona.personaType);
+            const Icon = personaType ? iconMap[personaType] : User;
             const industries = persona.industries.split(",").map((industry) => industry.trim()).filter(Boolean).slice(0, 3);
 
             return (
@@ -182,7 +185,7 @@ export default function AdminPersonasPage() {
                       )}
                     </div>
                     <p className="text-sm text-hive-emerald">{persona.title || "No title"}</p>
-                    <p className="text-xs text-hive-white/45 mt-1 uppercase tracking-wider">{persona.personaType}</p>
+                    <p className="text-xs text-hive-white/45 mt-1 uppercase tracking-wider">{personaTypeLabel}</p>
                   </div>
                 </div>
 

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { User, Briefcase, Target, Clock, ArrowLeft, Shield, Globe, Mail, Sparkles, ChevronLeft, ChevronRight } from 'lucide-react';
 import type { Persona } from '@/src/generated/client';
+import { getPersonaTypeLabel } from '@/src/domain/persona/taxonomy';
 
 export default function PersonaProfilePage() {
   const params = useParams();
@@ -36,6 +37,8 @@ export default function PersonaProfilePage() {
 
   if (!persona) return null;
 
+  const personaTypeLabel = getPersonaTypeLabel(persona.personaType);
+
   return (
     <div className="min-h-screen p-8 max-w-4xl mx-auto">
       <div className="flex items-center justify-between mb-8">
@@ -51,7 +54,7 @@ export default function PersonaProfilePage() {
           <ChevronRight className="w-4 h-4 text-slate-700" />
           <span className="text-emerald-400">Profile</span>
         </div>
-        <button 
+        <button
           onClick={() => router.back()}
           className="flex items-center gap-2 text-slate-500 hover:text-white transition-colors text-sm font-bold uppercase tracking-widest group"
         >
@@ -63,7 +66,7 @@ export default function PersonaProfilePage() {
       <div className="premium-card p-10 relative overflow-hidden">
         {/* Background Accent */}
         <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/5 blur-[80px] rounded-full -mr-20 -mt-20" />
-        
+
         <div className="flex flex-col md:flex-row gap-10 relative z-10">
           {/* Left Side: Avatar & Core Info */}
           <div className="md:w-1/3 flex flex-col items-center text-center">
@@ -78,13 +81,13 @@ export default function PersonaProfilePage() {
                 )}
               </div>
               <div className="absolute -bottom-3 -right-3 px-3 py-1 rounded-lg bg-emerald-600 text-[10px] font-bold uppercase tracking-widest shadow-xl">
-                {persona.personaType}
+                {personaTypeLabel}
               </div>
             </div>
 
             <h1 className="text-3xl font-black mb-1">{persona.name}</h1>
             <p className="text-emerald-400 font-bold text-sm mb-6 uppercase tracking-wider">{persona.title}</p>
-            
+
             <div className="w-full space-y-3">
               <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-slate-900/50 border border-slate-800">
                 <Shield className="w-4 h-4 text-slate-500" />

@@ -9,9 +9,6 @@ export async function GET() {
   }
 
   const personas = await prisma.persona.findMany({
-    where: {
-      personaType: { not: 'startup' }, // Only show human personas
-    },
     orderBy: { createdAt: 'asc' },
   });
 

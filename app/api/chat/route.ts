@@ -3,6 +3,7 @@ import { createHermesChatCompletionStream, HermesConfigurationError } from "@/sr
 import { prisma } from "@/src/infrastructure/db/prisma";
 import { getCurrentUser } from "@/src/infrastructure/auth/session";
 import { LAUNCHHIVE_SYSTEM_PROMPT } from "@/src/domain/launchhive/systemPrompt";
+import { PERSONA_TYPE } from "@/src/domain/persona/taxonomy";
 import { z } from "zod";
 import { logger } from "@/src/utils/logger";
 import { syncPersonaToAffinity } from "@/src/lib/affinity";
@@ -93,7 +94,7 @@ export async function POST(req: Request) {
             const newPersona = await tx.persona.create({
               data: {
                 name: user.name || "Unknown User",
-                personaType: "Uncategorized",
+                personaType: PERSONA_TYPE.SERVICE_PROVIDER,
                 title: "Professional",
                 background: safeBackground,
                 skills: "Pending",
@@ -116,7 +117,7 @@ export async function POST(req: Request) {
           }
         });
         logger.info("Saved resume text and populated persona atomically", { userId: user.id });
-        
+
         // Deep Integration: Sync to Squarespace Contacts
         const squarespaceResult = await syncUserToSquarespaceContacts({
           firstName: user.name?.split(' ')[0] || "Unknown",
@@ -134,13 +135,13 @@ export async function POST(req: Request) {
       // 2. Check for LinkedIn URL
       const linkedinRegex = /https:\/\/(www\.)?linkedin\.com\/in\/[a-zA-Z0-9-]+\/?/;
       const urlMatch = lastUserMessage.content.match(linkedinRegex);
-      
+
       if (urlMatch) {
         const safeUrl = sanitize(urlMatch[0], 500);
 
         const { fetchLinkedInProfile } = await import("@/src/infrastructure/linkedin/fetchProfile");
         const profileRes = await fetchLinkedInProfile(safeUrl);
-        
+
         if (profileRes.success && profileRes.data) {
           const title = sanitize(profileRes.data.headline || "Professional", 255);
           const backgroundData = sanitize((profileRes.data.summary || "") + "\n\nExperiences: " + JSON.stringify(profileRes.data.experiences), 2000);
@@ -156,7 +157,7 @@ export async function POST(req: Request) {
               const newPersona = await tx.persona.create({
                 data: {
                   name: user.name || "Unknown User",
-                  personaType: "Uncategorized",
+                  personaType: PERSONA_TYPE.SERVICE_PROVIDER,
                   title,
                   background: backgroundData,
                   skills: "Pending Extraction",
@@ -169,17 +170,17 @@ export async function POST(req: Request) {
                 data: { personaId: newPersona.id }
               });
             } else {
-               const existingPersona = await tx.persona.findUnique({ where: { id: currentConv.personaId } });
-               if (existingPersona) {
-                 await tx.persona.update({
-                   where: { id: currentConv.personaId },
-                   data: { title, background: backgroundData }
-                 });
-               }
+              const existingPersona = await tx.persona.findUnique({ where: { id: currentConv.personaId } });
+              if (existingPersona) {
+                await tx.persona.update({
+                  where: { id: currentConv.personaId },
+                  data: { title, background: backgroundData }
+                });
+              }
             }
           });
           logger.info("Saved LinkedIn URL and populated persona atomically", { userId: user.id, url: safeUrl });
-          
+
           // Deep Integration: Sync to Affinity CRM
           const affinityResult = await syncPersonaToAffinity({
             first_name: user.name?.split(' ')[0] || "Unknown",
@@ -208,13 +209,13 @@ export async function POST(req: Request) {
     }
   }
 
-  // Add demo startup context (Hardening: ensure personas are seeded)
-  const startups = await prisma.persona.findMany({
-    where: { personaType: "startup" },
+  // Add demo venture context (Hardening: ensure personas are seeded)
+  const ventures = await prisma.persona.findMany({
+    where: { personaType: PERSONA_TYPE.VENTURE },
   });
 
-  if (startups.length > 0) {
-    fullSystemPrompt += `\n\nAvailable demo startup opportunities:\n${startups.map((s: any, i: number) => `${i + 1}. ${s.name} — ${s.title}, ${s.stagePreference}, needs ${s.goals}.`).join('\n')}`;
+  if (ventures.length > 0) {
+    fullSystemPrompt += `\n\nAvailable demo venture opportunities:\n${ventures.map((venture: any, i: number) => `${i + 1}. ${venture.name} — ${venture.title}, ${venture.stagePreference}, needs ${venture.goals}.`).join('\n')}`;
   }
 
   if (conversation.persona) {
@@ -258,11 +259,11 @@ export async function POST(req: Request) {
 
     if (error.code === 'ECONNREFUSED' || error.message?.includes('fetch failed')) {
       logger.warn("Hermes gateway is offline", { conversationId });
-      return Response.json({ 
-        error: "LaunchHive’s local Hermes concierge is offline. Start Hermes with `hermes gateway`, then refresh." 
+      return Response.json({
+        error: "LaunchHive’s local Hermes concierge is offline. Start Hermes with `hermes gateway`, then refresh."
       }, { status: 503 });
     }
-    
+
     logger.error("Unexpected LaunchHive chat proxy error", { error: error.message, stack: error.stack });
     return Response.json({ error: "Unexpected LaunchHive chat proxy error" }, { status: 500 });
   }

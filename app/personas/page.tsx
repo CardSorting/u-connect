@@ -2,15 +2,16 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { User, Briefcase, GraduationCap, Microscope, Megaphone, Shield, ArrowRight, Plus, LayoutDashboard, ChevronLeft, ChevronRight } from 'lucide-react';
+import { User, Briefcase, Microscope, Megaphone, Wrench, ArrowRight, Plus, LayoutDashboard, ChevronLeft, ChevronRight } from 'lucide-react';
 import type { Persona } from '@/src/generated/client';
+import { getPersonaTypeLabel, normalizePersonaType, PERSONA_TYPE } from '@/src/domain/persona/taxonomy';
 
 const iconMap: Record<string, any> = {
-  operator: Briefcase,
-  student: GraduationCap,
-  founder: Microscope,
-  advisor: Megaphone,
-  executive: Shield,
+  [PERSONA_TYPE.OPERATOR]: Briefcase,
+  [PERSONA_TYPE.MENTOR]: Megaphone,
+  [PERSONA_TYPE.SUBJECT_MATTER_EXPERT]: Microscope,
+  [PERSONA_TYPE.VENTURE]: Briefcase,
+  [PERSONA_TYPE.SERVICE_PROVIDER]: Wrench,
 };
 
 export default function PersonasPage() {
@@ -91,7 +92,9 @@ export default function PersonasPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {personas.map((persona) => {
-          const Icon = iconMap[persona.personaType] || User;
+          const personaType = normalizePersonaType(persona.personaType);
+          const personaTypeLabel = getPersonaTypeLabel(persona.personaType);
+          const Icon = personaType ? iconMap[personaType] : User;
           return (
             <div
               key={persona.id}
@@ -106,13 +109,13 @@ export default function PersonasPage() {
                   )}
                 </div>
                 <span className="px-3 py-1 rounded-full bg-slate-800 text-xs font-medium text-slate-400 border border-slate-700 uppercase tracking-wider">
-                  {persona.personaType}
+                  {personaTypeLabel}
                 </span>
               </div>
 
               <h3 className="text-xl font-bold mb-1">{persona.name}</h3>
               <p className="text-emerald-400 text-sm font-medium mb-3">{persona.title}</p>
-              
+
               <p className="text-slate-400 text-sm line-clamp-3 mb-6 flex-grow">
                 {persona.background}
               </p>

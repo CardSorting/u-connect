@@ -1,152 +1,189 @@
 import { PrismaClient } from '../src/generated/client';
+import { PERSONA_TYPE, type PersonaType } from '../src/domain/persona/taxonomy';
 
 const prisma = new PrismaClient();
+
+type SeedPersona = {
+  id: string;
+  name: string;
+  personaType: PersonaType;
+  title: string;
+  organization: string | null;
+  background: string;
+  goals: string;
+  skills: string;
+  industries: string;
+  stagePreference: string;
+  availability: string;
+  capacity: number;
+  currentLoad: number;
+  riskTolerance: string;
+  missionInterests: string;
+  avatarUrl: string | null;
+  profileJson: string | null;
+  isHighValue: boolean;
+};
+
+const personas: SeedPersona[] = [
+  {
+    id: 'michael-alvarez',
+    name: 'Michael Alvarez',
+    personaType: PERSONA_TYPE.OPERATOR,
+    title: 'Former COO / Head of Commercial Operations — Digital Health',
+    organization: null,
+    background: '18+ years in healthcare operations and commercialization. Specialized in provider rollout, reimbursement strategy, and enterprise healthcare scaling. Experienced scaling growth-stage medtech organizations.',
+    goals: 'Help healthcare and digital health ventures scale commercialization, provider rollout, reimbursement strategy, and enterprise operations.',
+    skills: 'Healthcare operations, commercialization, provider rollout, reimbursement strategy, enterprise healthcare scaling, medtech growth operations',
+    industries: 'Digital health, medtech, healthcare operations, diagnostics',
+    stagePreference: 'Growth-stage medtech and digital health',
+    availability: 'Fractional operator or commercial operations advisor',
+    capacity: 5,
+    currentLoad: 0,
+    riskTolerance: 'Medium',
+    missionInterests: 'Healthcare commercialization, provider adoption, reimbursement readiness, enterprise scaling',
+    avatarUrl: null,
+    profileJson: JSON.stringify({
+      experience: [
+        { role: 'Chief Operating Officer', organization: 'VitalPath Diagnostics', years: '2021 – 2026' },
+        { role: 'VP of Commercial Operations', organization: 'ClearPulse Health', years: '2015 – 2021' },
+      ],
+    }),
+    isHighValue: false,
+  },
+  {
+    id: 'dr.-anita-raman',
+    name: 'Dr. Anita Raman',
+    personaType: PERSONA_TYPE.MENTOR,
+    title: 'Former Medtech CEO & Executive Advisor',
+    organization: null,
+    background: '25+ years in diagnostics and digital health leadership. Advises executives transitioning into C-suite healthcare leadership roles. Extensive board and commercialization experience.',
+    goals: 'Mentor healthcare founders and executives on leadership, board readiness, commercialization decisions, and C-suite operating judgment.',
+    skills: 'Executive mentorship, medtech leadership, diagnostics, digital health, board advisory, commercialization strategy',
+    industries: 'Diagnostics, digital health, medtech, healthcare leadership',
+    stagePreference: 'Seed to growth-stage healthcare ventures',
+    availability: 'Mentor',
+    capacity: 5,
+    currentLoad: 0,
+    riskTolerance: 'Medium',
+    missionInterests: 'Executive readiness, healthcare leadership, commercialization mentorship, board governance',
+    avatarUrl: null,
+    profileJson: JSON.stringify({
+      experience: [
+        { role: 'Chief Executive Officer', organization: 'NeuroAxis Medical', years: '2014 – 2023' },
+        { role: 'Board Advisor & Executive Mentor', organization: 'Independent', years: '2023 – Present' },
+      ],
+    }),
+    isHighValue: false,
+  },
+  {
+    id: 'dr.-kevin-liu',
+    name: 'Dr. Kevin Liu',
+    personaType: PERSONA_TYPE.SUBJECT_MATTER_EXPERT,
+    title: 'FDA Regulatory & Clinical AI Specialist',
+    organization: null,
+    background: 'Expert in AI/ML regulatory pathways and clinical validation. Focused on Software as a Medical Device (SaMD). Strong FDA and clinical evidence generation experience.',
+    goals: 'Advise clinical AI and digital health teams on FDA strategy, SaMD pathways, clinical validation, and evidence generation.',
+    skills: 'FDA regulatory strategy, AI/ML regulatory pathways, clinical validation, SaMD, clinical evidence generation, healthcare AI',
+    industries: 'Clinical AI, digital health, SaMD, medtech, healthcare regulatory',
+    stagePreference: 'Prototype to clinical validation',
+    availability: 'Subject-matter expert advisory',
+    capacity: 5,
+    currentLoad: 0,
+    riskTolerance: 'Medium',
+    missionInterests: 'Safe clinical AI adoption, FDA readiness, evidence-based digital health, medical software validation',
+    avatarUrl: null,
+    profileJson: JSON.stringify({
+      experience: [
+        { role: 'Director of Regulatory AI Strategy', organization: 'BioLogic Systems', years: '2020 – Present' },
+        { role: 'Clinical Research Scientist', organization: 'Mayo Clinic', years: '2013 – 2020' },
+      ],
+    }),
+    isHighValue: false,
+  },
+  {
+    id: 'rachel-kim',
+    name: 'Rachel Kim',
+    personaType: PERSONA_TYPE.VENTURE,
+    title: 'Healthcare Venture Partner — Early Stage Medtech',
+    organization: 'Northstar Health Ventures',
+    background: 'Investor focused on digital health and AI diagnostics. Experienced in healthcare infrastructure and commercialization. Former corporate strategy executive.',
+    goals: 'Evaluate and support early-stage medtech, digital health, and AI diagnostics ventures with capital strategy, commercialization insight, and healthcare infrastructure perspective.',
+    skills: 'Venture investing, digital health, AI diagnostics, healthcare infrastructure, commercialization, corporate strategy',
+    industries: 'Digital health, AI diagnostics, medtech, healthcare infrastructure, venture capital',
+    stagePreference: 'Early-stage medtech',
+    availability: 'Venture partner / investor perspective',
+    capacity: 5,
+    currentLoad: 0,
+    riskTolerance: 'Medium-high',
+    missionInterests: 'Digital health scale, AI diagnostics, healthcare infrastructure, early-stage medtech commercialization',
+    avatarUrl: null,
+    profileJson: JSON.stringify({
+      experience: [
+        { role: 'Venture Partner', organization: 'Northstar Health Ventures', years: '2021 – Present' },
+        { role: 'VP Corporate Strategy', organization: 'Philips', years: '2014 – 2021' },
+      ],
+    }),
+    isHighValue: true,
+  },
+  {
+    id: 'daniel-brooks',
+    name: 'Daniel Brooks',
+    personaType: PERSONA_TYPE.SERVICE_PROVIDER,
+    title: 'Healthcare Regulatory & Compliance Attorney',
+    organization: null,
+    background: 'Attorney focused on FDA compliance and HIPAA governance. Supports digital health and medtech startups. Experienced in enterprise healthcare agreements.',
+    goals: 'Support digital health and medtech ventures with FDA compliance, HIPAA governance, enterprise healthcare agreements, and regulatory risk management.',
+    skills: 'FDA compliance, HIPAA governance, healthcare regulatory law, enterprise healthcare agreements, medtech legal support, digital health compliance',
+    industries: 'Digital health, medtech, healthcare compliance, FDA regulatory, healthcare law',
+    stagePreference: 'Pre-seed to growth-stage healthcare ventures',
+    availability: 'Legal and compliance services',
+    capacity: 5,
+    currentLoad: 0,
+    riskTolerance: 'Low',
+    missionInterests: 'Responsible digital health deployment, FDA compliance, HIPAA governance, enterprise healthcare contracting',
+    avatarUrl: null,
+    profileJson: JSON.stringify({
+      experience: [
+        { role: 'Partner — Digital Health Practice', organization: 'Harper & Lowe LLP', years: '2018 – Present' },
+        { role: 'Associate Counsel', organization: 'U.S. Food and Drug Administration', years: '2012 – 2018' },
+      ],
+    }),
+    isHighValue: false,
+  },
+];
+
+const obsoleteSeedPersonaIds = [
+  'dr.-maya-chen',
+  'ethan-ramirez',
+  'sarah-whitaker',
+  'dr.-aaron-patel',
+  'jessica-morgan',
+  'marcus-lee',
+  'cardiosignal-bio',
+  'labpilot-ai',
+  'forgegrid-systems',
+];
 
 async function main() {
   console.log('Seeding personas...');
 
-  const personas = [
-    {
-      name: 'Dr. Maya Chen',
-      personaType: 'operator',
-      title: 'Former Medtech Executive',
-      background: 'Former medtech commercialization executive with experience taking diagnostics products through FDA pathways, building early go-to-market teams, and advising university spinouts.',
-      goals: 'Interested in advisory or fractional COO roles with biotech or life sciences startups.',
-      skills: 'Regulatory strategy, commercialization, FDA pathways, go-to-market, partnerships, executive leadership',
-      industries: 'Biotech, diagnostics, medtech, life sciences',
-      stagePreference: 'Idea to pre-seed',
-      availability: 'Advisory or fractional',
-      riskTolerance: 'Medium',
-      missionInterests: 'Healthcare access, university research translation, diagnostics',
-      avatarUrl: '/avatars/maya.png',
-    },
-    {
-      name: 'Ethan Ramirez',
-      personaType: 'student',
-      title: 'AI Student Intern',
-      background: 'University student studying computer science with experience in Python, machine learning projects, data pipelines, and hackathon prototypes.',
-      goals: 'Looking for internship or part-time technical work with AI startups or research spinouts.',
-      skills: 'Python, ML prototyping, data analysis, frontend basics, model evaluation',
-      industries: 'AI, software, research tools',
-      stagePreference: 'Any early-stage startup',
-      availability: 'Part-time internship',
-      riskTolerance: 'High',
-      missionInterests: 'AI tools, education, research acceleration',
-      avatarUrl: '/avatars/ethan.png',
-    },
-    {
-      name: 'Sarah Whitaker',
-      personaType: 'operator',
-      title: 'Operations Leader',
-      background: 'Operations leader with experience scaling manufacturing and logistics teams from 10 to 80 employees. Has worked with hardware, advanced manufacturing, and energy companies.',
-      goals: 'Looking for fractional COO or operations advisor work with deep-tech startups preparing to scale.',
-      skills: 'Operations, hiring systems, vendor management, manufacturing process, finance operations, scaling',
-      industries: 'Advanced manufacturing, energy, hardware',
-      stagePreference: 'Seed to Series A',
-      availability: 'Fractional',
-      riskTolerance: 'Medium',
-      missionInterests: 'Manufacturing resilience, energy transition, Utah job creation',
-      avatarUrl: '/avatars/sarah.png',
-    },
-    {
-      name: 'Dr. Aaron Patel',
-      personaType: 'founder',
-      title: 'University Researcher',
-      background: 'University researcher developing advanced materials technology with potential applications in aerospace and defense. Has technical validation but limited business experience.',
-      goals: 'Needs commercialization help, operator guidance, and possibly a fractional business lead.',
-      skills: 'Advanced materials, research leadership, grant writing, technical validation',
-      industries: 'Advanced materials, aerospace, defense',
-      stagePreference: 'Research spinout / idea stage',
-      availability: 'Founder',
-      riskTolerance: 'Medium-low',
-      missionInterests: 'Defense innovation, materials science, university tech transfer',
-      avatarUrl: '/avatars/aaron.png',
-    },
-    {
-      name: 'Jessica Morgan',
-      personaType: 'advisor',
-      title: 'B2B SaaS Sales Leader',
-      background: 'Former B2B SaaS sales leader with experience building first sales motions, customer discovery, and enterprise pilot programs.',
-      goals: 'Interested in mentoring or advising Utah startups that need customer discovery and early sales help.',
-      skills: 'Sales strategy, enterprise GTM, customer discovery, pipeline development, pricing, positioning',
-      industries: 'Software, AI, fintech, cyber',
-      stagePreference: 'Pre-seed to seed',
-      availability: 'Advisor / mentor',
-      riskTolerance: 'Medium-high',
-      missionInterests: 'Helping technical founders learn sales',
-      avatarUrl: '/avatars/jessica.png',
-    },
-    {
-      name: 'Marcus Lee',
-      personaType: 'operator',
-      title: 'Cybersecurity Product Leader',
-      background: 'Former cybersecurity product leader with experience in federal customers, compliance-heavy sales, and technical product strategy.',
-      goals: 'Looking for advisory, board, or fractional product leadership opportunities with cybersecurity or defense startups.',
-      skills: 'Cybersecurity, product strategy, federal GTM, compliance, enterprise sales',
-      industries: 'Cybersecurity, defense, software',
-      stagePreference: 'Seed to growth',
-      availability: 'Advisory or fractional',
-      riskTolerance: 'Medium',
-      missionInterests: 'National security, cyber resilience, enterprise security',
-      avatarUrl: '/avatars/marcus.png',
-    },
-    // Startup Opportunities
-    {
-      name: 'CardioSignal Bio',
-      personaType: 'startup',
-      title: 'UofU Biotech Spinout',
-      background: 'University of Utah biotech spinout developing diagnostic tools for early cardiovascular risk detection.',
-      goals: 'Needs commercialization advisor, regulatory strategy, fractional operator',
-      skills: 'Biotech, diagnostics, regulatory',
-      industries: 'Biotech / diagnostics',
-      stagePreference: 'Pre-seed',
-      availability: 'Open',
-      riskTolerance: 'N/A',
-      missionInterests: 'University of Utah',
-      avatarUrl: null,
-    },
-    {
-      name: 'LabPilot AI',
-      personaType: 'startup',
-      title: 'BYU AI Research Tool',
-      background: 'BYU research spinout building AI workflow tools for academic labs and research teams.',
-      goals: 'Needs ML intern, technical prototype support, early user research',
-      skills: 'AI, machine learning, research software',
-      industries: 'AI / research software',
-      stagePreference: 'Idea to pre-seed',
-      availability: 'Open',
-      riskTolerance: 'N/A',
-      missionInterests: 'BYU',
-      avatarUrl: null,
-    },
-    {
-      name: 'ForgeGrid Systems',
-      personaType: 'startup',
-      title: 'USU Advanced Manufacturing Startup',
-      background: 'Utah State University-linked advanced manufacturing startup building hardware-enabled workflow systems for regional manufacturers.',
-      goals: 'Needs fractional COO, operations leader, manufacturing advisor',
-      skills: 'Advanced manufacturing, operations, hardware',
-      industries: 'Advanced manufacturing',
-      stagePreference: 'Seed',
-      availability: 'Open',
-      riskTolerance: 'N/A',
-      missionInterests: 'Utah State University',
-      avatarUrl: null,
-    },
-  ];
+  for (const persona of personas) {
+    const { id, ...data } = persona;
 
-  for (const p of personas) {
     await prisma.persona.upsert({
-      where: { id: p.name.toLowerCase().replace(/\s+/g, '-') }, // Simplified ID for seeding
-      update: {
-        avatarUrl: p.avatarUrl,
-      },
-      create: {
-        id: p.name.toLowerCase().replace(/\s+/g, '-'),
-        ...p,
-      },
+      where: { id },
+      update: data,
+      create: persona,
     });
   }
+
+  await prisma.persona.deleteMany({
+    where: {
+      id: { in: obsoleteSeedPersonaIds },
+      conversations: { none: {} },
+      matches: { none: {} },
+    },
+  });
 
   console.log('Seed completed.');
 }
