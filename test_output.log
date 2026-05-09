@@ -1,0 +1,36 @@
+
+Running 1 test using 1 worker
+
+[1A[2K[1/1] [chromium] › tests/launchhive.spec.ts:10:7 › LaunchHive E2E Audit › Complete user journey: Landing -> Login -> Persona -> Chat -> Matches
+[1A[2K  1) [chromium] › tests/launchhive.spec.ts:10:7 › LaunchHive E2E Audit › Complete user journey: Landing -> Login -> Persona -> Chat -> Matches 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('text=Matches Generated')
+    Expected: visible
+    Timeout: 60000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 60000ms[22m
+    [2m  - waiting for locator('text=Matches Generated')[22m
+
+
+      35 |
+      36 |     // Wait for "Matches Generated" feedback
+    > 37 |     await expect(page.locator('text=Matches Generated')).toBeVisible({ timeout: 60000 });
+         |                                                          ^
+      38 |
+      39 |     // 5. Matches Dashboard
+      40 |     await page.click('text=View Matches');
+        at /Users/bozoegg/Desktop/u-connect/tests/launchhive.spec.ts:37:58
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/launchhive-LaunchHive-E2E--682b2----Persona---Chat---Matches-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/launchhive-LaunchHive-E2E--682b2----Persona---Chat---Matches-chromium/error-context.md
+
+
+[1A[2K  1 failed
+    [chromium] › tests/launchhive.spec.ts:10:7 › LaunchHive E2E Audit › Complete user journey: Landing -> Login -> Persona -> Chat -> Matches 

@@ -1,0 +1,94 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/client"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  roleType  String?
+  sessions  Session[]
+  conversations Conversation[]
+  matches   MatchResult[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+}
+
+model Persona {
+  id                String   @id @default(cuid())
+  name              String
+  personaType       String
+  title             String?
+  organization      String?
+  background        String
+  goals             String
+  skills            String
+  industries        String
+  stagePreference   String?
+  availability      String?
+  riskTolerance     String?
+  missionInterests  String?
+  avatarUrl         String?
+  profileJson       String? // SQLite doesn't support Json type natively in Prisma well, String for JSON
+  conversations     Conversation[]
+  matches           MatchResult[]
+  createdAt         DateTime @default(now())
+}
+
+model Conversation {
+  id          String   @id @default(cuid())
+  userId      String
+  personaId   String?
+  title       String?
+  state       String   @default("intake")
+  user        User     @relation(fields: [userId], references: [id])
+  persona     Persona? @relation(fields: [personaId], references: [id])
+  messages    Message[]
+  matches     MatchResult[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Message {
+  id             String   @id @default(cuid())
+  conversationId String
+  role           String
+  content        String
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  createdAt      DateTime @default(now())
+}
+
+model MatchResult {
+  id             String   @id @default(cuid())
+  userId         String
+  conversationId String
+  personaId      String?
+  matchName      String
+  matchType      String
+  sector         String?
+  startupStage   String?
+  confidence     String?
+  explanation    String
+  gaps           String?
+  nextStep       String?
+  rawJson        String? // String for JSON
+  user           User @relation(fields: [userId], references: [id])
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  persona        Persona? @relation(fields: [personaId], references: [id])
+  createdAt      DateTime @default(now())
+}

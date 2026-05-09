@@ -1,0 +1,70 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #0a0a0c;
+  --foreground: #f8fafc;
+  --primary: #6366f1;
+  --primary-glow: rgba(99, 102, 241, 0.5);
+  --secondary: #1e293b;
+  --accent: #8b5cf6;
+  --card-bg: #111114;
+  --border: #27272a;
+}
+
+@layer base {
+  body {
+    @apply bg-[var(--background)] text-[var(--foreground)] antialiased;
+    font-feature-settings: "ss01", "ss02", "cv01", "cv02", "cv03";
+  }
+}
+
+@layer components {
+  .premium-card {
+    @apply bg-[var(--card-bg)] border border-[var(--border)] rounded-2xl p-6 shadow-2xl transition-all duration-300 hover:border-[var(--primary)] hover:shadow-[0_0_20px_rgba(99,102,241,0.1)];
+  }
+
+  .premium-button {
+    @apply relative px-6 py-3 rounded-xl font-semibold transition-all duration-300 overflow-hidden flex items-center justify-center gap-2;
+  }
+
+  .premium-button-primary {
+    @apply premium-button bg-[var(--primary)] text-white hover:scale-[1.02] active:scale-[0.98] shadow-[0_0_15px_rgba(99,102,241,0.3)];
+  }
+
+  .premium-button-secondary {
+    @apply premium-button bg-[var(--secondary)] text-slate-300 hover:bg-slate-800 hover:text-white border border-[var(--border)];
+  }
+
+  .glass-panel {
+    @apply bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl;
+  }
+
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-800 rounded-full hover:bg-slate-700 transition-colors;
+}
+
+/* Animations */
+@keyframes glow {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+.glow-effect {
+  animation: glow 4s ease-in-out infinite;
+}
