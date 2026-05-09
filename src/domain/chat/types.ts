@@ -28,9 +28,9 @@ const isValidContent = (value: unknown): value is string =>
 export const isClientChatMessage = (value: unknown): value is ClientChatMessage =>
   isRecord(value) && isClientChatRole(value.role) && isValidContent(value.content);
 
-export const sanitizeClientMessages = (value: unknown): ClientChatMessage[] | null => {
+export const sanitizeClientMessages = (value: unknown): ClientChatMessage[] => {
   if (!Array.isArray(value)) {
-    return null;
+    return [];
   }
 
   // If chat history is too long, keep the most recent messages to stay within limit
@@ -38,16 +38,11 @@ export const sanitizeClientMessages = (value: unknown): ClientChatMessage[] | nu
     ? value.slice(-MAX_MESSAGES) 
     : value;
 
-  const processed = messagesToProcess
+  return messagesToProcess
     .filter((msg): msg is any => isRecord(msg) && isClientChatRole(msg.role) && typeof msg.content === "string")
     .map((msg) => ({
       role: msg.role as ClientChatRole,
       content: msg.content.trim().substring(0, MAX_MESSAGE_LENGTH),
     }))
     .filter(msg => msg.content.length > 0);
-
-  // Fallback: If all messages were filtered out but we have a valid array, 
-  // ensure we return at least an empty array instead of null so the API can handle it
-  // (though in practice POST should have at least one user message).
-  return processed;
 };

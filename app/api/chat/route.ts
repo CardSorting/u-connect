@@ -42,7 +42,7 @@ export async function POST(req: Request) {
   const { messages, conversationId } = result.data;
   const sanitizedMessages = sanitizeClientMessages(messages);
 
-  if (!sanitizedMessages) {
+  if (sanitizedMessages.length === 0) {
     return Response.json({ error: "Invalid chat messages" }, { status: 400 });
   }
 
