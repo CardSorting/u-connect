@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { Send, User, Bot, Loader2, Sparkles, RefreshCcw, ChevronLeft, ChevronRight, ShieldCheck, AlertTriangle, ShieldAlert, CheckCircle2, Info, FastForward, XCircle, Eye, Zap, BookOpen, Target, UserCheck, Compass } from 'lucide-react';
+import { Send, User, Bot, Loader2, Sparkles, RefreshCcw, ChevronLeft, ChevronRight, ShieldCheck, AlertTriangle, ShieldAlert, CheckCircle2, Info, FastForward, XCircle, Eye, Zap, BookOpen, Target, UserCheck, Compass, Paperclip } from 'lucide-react';
 import { readOpenAIStream } from '@/src/utils/openAIStream';
 import { ClientChatMessage } from '@/src/domain/chat/types';
 import type { Persona } from '@/src/generated/client';
@@ -18,6 +18,15 @@ function ChatContent() {
   const [isInitializing, setIsInitializing] = useState(true);
   const [persona, setPersona] = useState<Persona | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const msg = `[User uploaded resume: ${file.name}]`;
+      setInput(msg);
+    }
+  };
 
   const currentStepMatch = messages
     .filter(m => m.role === 'assistant')
@@ -28,11 +37,10 @@ function ChatContent() {
   const currentStep = currentStepMatch ? parseInt(currentStepMatch) : 1;
 
   const wizardSteps = [
-    { num: 1, label: "Founder" },
-    { num: 2, label: "Problem" },
-    { num: 3, label: "Solution" },
-    { num: 4, label: "Traction" },
-    { num: 5, label: "Ecosystem" },
+    { num: 1, label: "Background" },
+    { num: 2, label: "Identity" },
+    { num: 3, label: "Deep Dive" },
+    { num: 4, label: "Goals" },
   ];
 
   useEffect(() => {
@@ -59,7 +67,7 @@ function ChatContent() {
           setPersona(data.persona);
           
           if (data.messages.length === 0) {
-             const greeting = "Welcome to LaunchHive! I'm your Discovery Concierge. I'll be guiding you through a brief, conversational application so we can match you with the right ecosystem resources. To kick things off—could you introduce yourself and your team? What's your background, and what unique insight brought you here? [STATUS: SCREENING_STEP_1]";
+             const greeting = "Welcome to LaunchHive! I'm your Discovery Concierge. I'll be guiding you through a brief onboarding process. To kick things off—could you either upload your resume or share a link to your LinkedIn profile? [STATUS: SCREENING_STEP_1]";
              setMessages([{ role: 'assistant', content: greeting }]);
              fetch('/api/messages', {
               method: 'POST',
@@ -264,27 +272,26 @@ function ChatContent() {
                       {m.content.match(/\[STATUS: SCREENING_STEP_(\d)\]/) && (() => {
                         const step = m.content.match(/\[STATUS: SCREENING_STEP_(\d)\]/)?.[1];
                         const labels: Record<string, string> = {
-                          "1": "The Founder & Insight",
-                          "2": "The Core Problem",
-                          "3": "Solution & Technology",
-                          "4": "Traction & Blockers",
-                          "5": "Ecosystem Synergy"
+                          "1": "Professional Grounding",
+                          "2": "Identity & Categorization",
+                          "3": "Deep Investigation",
+                          "4": "Ecosystem Synergy"
                         };
-                        const label = step ? labels[step] : "Discovery";
+                        const label = step ? labels[step] : "Onboarding";
                         
                         return (
                           <div className="p-4 rounded-xl bg-blue-500/10 border border-blue-500/20 flex gap-4 items-start w-full max-w-sm">
                             <Target className="w-5 h-5 text-blue-400 shrink-0 mt-0.5" />
                             <div className="flex-1 w-full">
                               <div className="flex justify-between items-end mb-1">
-                                <p className="text-[10px] font-bold text-blue-300 uppercase tracking-wider">Discovery Phase</p>
-                                <p className="text-[10px] font-mono text-blue-400">{step}/5</p>
+                                <p className="text-[10px] font-bold text-blue-300 uppercase tracking-wider">Onboarding Phase</p>
+                                <p className="text-[10px] font-mono text-blue-400">{step}/4</p>
                               </div>
                               <p className="text-xs text-slate-200 font-medium mb-3">{label}</p>
                               <div className="w-full h-1.5 bg-blue-900/40 rounded-full overflow-hidden">
                                 <div 
                                   className="h-full bg-blue-500 rounded-full transition-all duration-1000 ease-out" 
-                                  style={{ width: `${(parseInt(step || '1') / 5) * 100}%` }} 
+                                  style={{ width: `${(parseInt(step || '1') / 4) * 100}%` }} 
                                 />
                               </div>
                             </div>
@@ -349,11 +356,25 @@ function ChatContent() {
       <div className="p-6 border-t border-slate-800 bg-slate-900/40 backdrop-blur-xl">
         <form onSubmit={handleSubmit} className="max-w-3xl mx-auto relative">
           <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileUpload}
+            className="hidden"
+            accept=".pdf,.doc,.docx,.txt"
+          />
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            className="absolute left-3 top-1/2 -translate-y-1/2 p-2 text-slate-400 hover:text-emerald-400 transition-colors"
+          >
+            <Paperclip className="w-5 h-5" />
+          </button>
+          <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder={isLoading ? "Discovery in progress..." : "Tell me about your blocker..."}
+            placeholder={isLoading ? "Onboarding in progress..." : "Share your background or link your LinkedIn..."}
             disabled={isLoading}
-            className="w-full bg-slate-900/80 border border-slate-800 rounded-2xl py-4 pl-5 pr-14 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all text-white placeholder:text-slate-600 shadow-2xl"
+            className="w-full bg-slate-900/80 border border-slate-800 rounded-2xl py-4 pl-12 pr-14 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all text-white placeholder:text-slate-600 shadow-2xl"
           />
           <button
             type="submit"

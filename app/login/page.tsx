@@ -24,9 +24,17 @@ export default function LoginPage() {
       if (res.ok) {
         // 1. Fetch latest conversation or create new one
         const convRes = await fetch('/api/conversations');
-        const conversations = await convRes.json();
+        const convText = await convRes.text();
         
-        if (conversations.length > 0) {
+        let conversations;
+        try {
+          conversations = convText ? JSON.parse(convText) : [];
+        } catch (e) {
+          console.error('Failed to parse conversations JSON. Status:', convRes.status, 'Response:', convText);
+          throw new Error('Invalid response from server');
+        }
+        
+        if (Array.isArray(conversations) && conversations.length > 0) {
           router.push(`/chat?conversationId=${conversations[0].id}`);
         } else {
           // Create new conversation
@@ -35,6 +43,13 @@ export default function LoginPage() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ personaId: undefined }),
           });
+          
+          if (!createRes.ok) {
+             const errorText = await createRes.text();
+             console.error('Failed to create conversation. Status:', createRes.status, 'Response:', errorText);
+             throw new Error('Failed to create conversation');
+          }
+          
           const newConv = await createRes.json();
           router.push(`/chat?conversationId=${newConv.id}`);
         }
@@ -43,7 +58,7 @@ export default function LoginPage() {
       }
     } catch (error) {
       console.error('Login error:', error);
-      alert('An error occurred');
+      alert('An error occurred during login. Check console for details.');
     } finally {
       setIsLoading(false);
     }
@@ -102,7 +117,7 @@ export default function LoginPage() {
                 <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
               ) : (
                 <>
-                  Begin Discovery Intake
+                  Begin Ecosystem Onboarding
                   <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
                 </>
               )}
