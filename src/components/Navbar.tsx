@@ -10,7 +10,7 @@ export default function Navbar() {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
 
-  if (pathname.startsWith('/admin') || pathname.startsWith('/login')) {
+  if (pathname.startsWith('/admin') || pathname.startsWith('/login') || pathname.startsWith('/chat') || pathname.startsWith('/dashboard')) {
     return null;
   }
 

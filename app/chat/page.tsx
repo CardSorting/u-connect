@@ -52,6 +52,14 @@ function ChatContent() {
     "There may be regulatory or IP considerations, but I need help understanding the path.",
   ];
 
+  const hasProfileSource = messages.some((message) => {
+    if (message.role !== 'user') return false;
+    return (
+      message.content.includes('[User uploaded resume:') ||
+      /https:\/\/(www\.)?linkedin\.com\/in\/[a-zA-Z0-9-]+\/?/i.test(message.content)
+    );
+  });
+
   useEffect(() => {
     if (!conversationId) {
       router.push('/personas');
@@ -186,97 +194,62 @@ function ChatContent() {
   }
 
   return (
-    <div className="flex flex-col h-[calc(100vh-4rem)] bg-black text-slate-200">
-      <header className="h-16 border-b border-white/5 px-6 flex items-center justify-between bg-black/60 backdrop-blur-md sticky top-0 z-10">
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2 text-[10px] sm:text-xs font-bold uppercase tracking-widest text-slate-500">
-            <button onClick={() => router.push('/dashboard')} className="flex items-center gap-1 hover:text-white transition-colors group">
-              <ChevronLeft className="w-3 h-3 group-hover:-translate-x-1 transition-transform" />
-              Dashboard
-            </button>
-            <ChevronRight className="w-3 h-3 text-slate-700" />
-            <span className="text-emerald-400 flex items-center gap-1">
-              <Compass className="w-3 h-3" />
-              Concierge
-            </span>
+    <div className="flex flex-col h-screen bg-black text-slate-200">
+      <header className="shrink-0 border-b border-white/5 bg-black/80 backdrop-blur-md px-3 py-2 sticky top-0 z-10">
+        <div className="max-w-6xl mx-auto flex items-center gap-2 min-w-0">
+          <button onClick={() => router.push('/dashboard')} className="flex items-center gap-1 text-[10px] sm:text-xs font-bold uppercase tracking-widest text-slate-500 hover:text-white transition-colors group">
+            <ChevronLeft className="w-3 h-3 group-hover:-translate-x-1 transition-transform" />
+            Dashboard
+          </button>
+          <span className="hidden sm:block text-slate-700">/</span>
+          <span className="hidden sm:flex text-[10px] font-bold uppercase tracking-widest text-emerald-400 items-center gap-1">
+            <Compass className="w-3 h-3" />
+            Concierge
+          </span>
+          <div className="h-4 w-px bg-white/10 hidden lg:block" />
+          <div className="flex min-w-0 flex-1 items-center gap-2 overflow-x-auto py-1">
+            <div className="shrink-0 hidden md:block">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Intake</p>
+              <p className="text-[11px] font-semibold text-white"><span className="text-emerald-300">{currentStepLabel}</span></p>
+            </div>
+            <div className="flex items-center gap-1.5">
+              {wizardSteps.map((step) => {
+                const isPast = currentStep > step.num;
+                const isCurrent = currentStep === step.num;
+
+                return (
+                  <div
+                    key={step.num}
+                    className={`shrink-0 rounded-xl border px-3 py-2 flex items-center gap-2 transition-colors ${
+                      isCurrent
+                        ? 'border-emerald-500/40 bg-emerald-500/10 text-white'
+                        : isPast
+                          ? 'border-emerald-500/20 bg-slate-900/70 text-slate-300'
+                          : 'border-slate-800 bg-slate-950/60 text-slate-500'
+                    } px-2.5 py-1.5`}
+                  >
+                    <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${
+                      isPast ? 'bg-emerald-500 text-white' : isCurrent ? 'bg-black text-emerald-300 border border-emerald-400' : 'bg-slate-900 text-slate-500 border border-slate-700'
+                    }`}>
+                      {isPast ? <CheckCircle2 className="w-3 h-3" /> : step.num}
+                    </span>
+                    <span className="text-[10px] font-bold uppercase tracking-wider whitespace-nowrap">{step.label}</span>
+                  </div>
+                );
+              })}
+            </div>
           </div>
-          <div className="w-px h-4 bg-white/10 mx-2 hidden sm:block"></div>
-          <div>
-            <h1 className="font-bold tracking-tight text-white flex items-center gap-2 text-sm sm:text-base">
-              <Compass className="w-4 h-4 text-emerald-400" />
-              Discovery Concierge
-            </h1>
-            {persona && (
-              <p className="text-[10px] text-emerald-400 font-bold uppercase tracking-widest">
-                Journey: {persona.name}
-              </p>
-            )}
-          </div>
+          <button
+            onClick={() => router.push('/matches')}
+            className="shrink-0 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold shadow-lg shadow-emerald-500/20 transition-all"
+          >
+            Matches
+          </button>
         </div>
-        <button 
-          onClick={() => router.push('/matches')}
-          className="px-4 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-lg shadow-emerald-500/20 transition-all"
-        >
-          View Matches
-        </button>
       </header>
 
-      {/* Global Wizard Navigation */}
-      <div className="bg-slate-900/60 border-b border-white/5 py-3 px-6 shrink-0 z-10 backdrop-blur-md relative shadow-xl">
-        <div className="max-w-5xl mx-auto">
-          <div className="mb-3 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-1">
-            <div>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Guided Intake</p>
-              <p className="text-sm font-semibold text-white">Current step: <span className="text-emerald-300">{currentStepLabel}</span></p>
-            </div>
-            <p className="text-xs text-slate-500 max-w-md">
-              Answer one question at a time. LaunchHive uses this to find better matches and prepare the CRM handoff.
-            </p>
-          </div>
-          <div className="flex items-center justify-between gap-2 relative">
-            {/* Background Line */}
-            <div className="absolute top-3 left-0 w-full h-0.5 bg-slate-800 -z-10 -translate-y-1/2" />
-            
-            {wizardSteps.map((step) => {
-              const isPast = currentStep > step.num;
-              const isCurrent = currentStep === step.num;
-              
-              return (
-                <div key={step.num} className="flex flex-col items-center flex-1 relative group">
-                  {/* Active Line Fill */}
-                  {step.num !== 1 && (
-                    <div 
-                      className="absolute top-3 right-1/2 w-full h-0.5 -translate-y-1/2 -z-10 transition-colors duration-700 ease-in-out bg-emerald-500"
-                      style={{ opacity: currentStep >= step.num ? 1 : 0 }}
-                    />
-                  )}
-                  
-                  <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold border-2 transition-all duration-500 shadow-sm ${
-                    isPast ? 'bg-emerald-500 border-emerald-500 text-white' :
-                    isCurrent ? 'bg-black border-emerald-400 text-emerald-400 shadow-[0_0_15px_rgba(52,211,153,0.3)] scale-110' :
-                    'bg-slate-900 border-slate-700 text-slate-500'
-                  }`}>
-                    {isPast ? <CheckCircle2 className="w-3 h-3" /> : step.num}
-                  </div>
-                  <span className={`text-[9px] mt-1.5 font-bold uppercase tracking-wider transition-colors duration-500 ${
-                    isCurrent ? 'text-emerald-400' : 
-                    isPast ? 'text-slate-300' : 'text-slate-600'
-                  }`}>
-                    {step.label}
-                  </span>
-                  <span className="hidden sm:block text-[9px] text-slate-600 mt-0.5 text-center leading-tight max-w-24">
-                    {step.helper}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-
-      <div className="flex-1 overflow-y-auto p-6 space-y-6 scrollbar-hide">
-        <div className="max-w-5xl mx-auto grid lg:grid-cols-[1fr_280px] gap-6">
-          <div className="space-y-6">
+      <div className="flex-1 overflow-y-auto p-4 sm:p-6 scrollbar-hide">
+        <div className="max-w-4xl mx-auto space-y-6">
           {messages.map((m, i) => (
             <div 
               key={i} 
@@ -394,40 +367,32 @@ function ChatContent() {
             </div>
           )}
           <div ref={messagesEndRef} />
-          </div>
-
-          <aside className="hidden lg:block space-y-4 sticky top-4 self-start">
-            <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-4">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-400 mb-2">Dig Deeper Checklist</p>
-              <div className="space-y-3 text-xs text-slate-400">
-                <ChecklistItem active={currentStep >= 1} label="Background source captured" />
-                <ChecklistItem active={currentStep >= 2} label="Role category confirmed" />
-                <ChecklistItem active={currentStep >= 3} label="Stage, blocker, proof, risk" />
-                <ChecklistItem active={currentStep >= 4} label="One clear ecosystem ask" />
-                <ChecklistItem active={currentStep >= 5} label="Summary ready for handoff" />
+          {hasProfileSource && (
+            <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-3">
+              <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
+                <p className="shrink-0 text-[10px] font-bold uppercase tracking-widest text-slate-500">
+                  Helpful Examples
+                </p>
+                <div className="grid flex-1 grid-cols-1 gap-2 sm:grid-cols-3">
+                  {quickPrompts.map((prompt) => (
+                    <button
+                      key={prompt}
+                      type="button"
+                      onClick={() => setInput(prompt)}
+                      className="rounded-xl border border-slate-800 bg-black/30 p-3 text-left text-xs leading-relaxed text-slate-300 hover:border-emerald-500/30 hover:text-white transition-colors"
+                    >
+                      {prompt}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
-            <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-4">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-3">Helpful Examples</p>
-              <div className="space-y-2">
-                {quickPrompts.map((prompt) => (
-                  <button
-                    key={prompt}
-                    type="button"
-                    onClick={() => setInput(prompt)}
-                    className="w-full rounded-xl border border-slate-800 bg-black/30 p-3 text-left text-xs leading-relaxed text-slate-300 hover:border-emerald-500/30 hover:text-white transition-colors"
-                  >
-                    {prompt}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </aside>
+          )}
         </div>
       </div>
 
       <div className="p-6 border-t border-slate-800 bg-slate-900/40 backdrop-blur-xl">
-        <form onSubmit={handleSubmit} className="max-w-3xl mx-auto relative">
+        <form onSubmit={handleSubmit} className="max-w-4xl mx-auto relative">
           <input
             type="file"
             ref={fileInputRef}
@@ -458,15 +423,6 @@ function ChatContent() {
           </button>
         </form>
       </div>
-    </div>
-  );
-}
-
-function ChecklistItem({ active, label }: { active: boolean; label: string }) {
-  return (
-    <div className="flex items-center gap-2">
-      <CheckCircle2 className={`w-4 h-4 ${active ? 'text-emerald-400' : 'text-slate-700'}`} />
-      <span className={active ? 'text-slate-200' : 'text-slate-500'}>{label}</span>
     </div>
   );
 }
