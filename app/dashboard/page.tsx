@@ -11,7 +11,8 @@ import {
   ChevronRight, 
   Plus,
   Clock,
-  ShieldCheck
+  ShieldCheck,
+  Rocket
 } from 'lucide-react';
 import type { MatchResult, Persona, Conversation } from '@/src/generated/client';
 
@@ -83,9 +84,32 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-black text-slate-200 p-6 md:p-12 lg:p-20">
       <div className="max-w-5xl mx-auto">
+        <div className="flex justify-between items-center mb-12 pb-6 border-b border-white/5">
+          <div className="flex items-center gap-2 group cursor-pointer" onClick={() => router.push('/')}>
+            <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 group-hover:bg-emerald-500/20 transition-all">
+              <Rocket className="w-5 h-5" />
+            </div>
+            <span className="font-black text-white tracking-tighter text-lg uppercase">LaunchHive</span>
+          </div>
+          <button 
+            onClick={async () => {
+              await fetch('/api/auth/logout', { method: 'POST' });
+              router.push('/');
+            }}
+            className="text-xs font-bold text-slate-500 hover:text-red-400 transition-colors uppercase tracking-widest"
+          >
+            Sign Out
+          </button>
+        </div>
+
         <header className="flex flex-col md:flex-row justify-between items-end gap-6 mb-16">
           <div>
-            <h1 className="text-4xl md:text-5xl font-black tracking-tight text-white mb-2">Ecosystem Hub</h1>
+            <div className="flex items-center gap-2 text-sm font-bold uppercase tracking-widest mb-4 text-slate-500">
+              <span>LaunchHive</span>
+              <ChevronRight className="w-4 h-4 text-slate-700" />
+              <span className="text-emerald-400">Dashboard</span>
+            </div>
+            <h1 className="text-4xl md:text-5xl font-black tracking-tight text-white mb-2 uppercase">Ecosystem Hub</h1>
             <p className="text-slate-500 font-medium">Your centralized commercialization mission control.</p>
           </div>
           <button 

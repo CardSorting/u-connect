@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { User, Briefcase, Target, Clock, ArrowLeft, Shield, Globe, Mail, Sparkles } from 'lucide-react';
+import { User, Briefcase, Target, Clock, ArrowLeft, Shield, Globe, Mail, Sparkles, ChevronLeft, ChevronRight } from 'lucide-react';
 import type { Persona } from '@/src/generated/client';
 
 export default function PersonaProfilePage() {
@@ -38,13 +38,27 @@ export default function PersonaProfilePage() {
 
   return (
     <div className="min-h-screen p-8 max-w-4xl mx-auto">
-      <button 
-        onClick={() => router.back()}
-        className="flex items-center gap-2 text-slate-500 hover:text-white transition-colors mb-8 group"
-      >
-        <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-        Back to Matches
-      </button>
+      <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center gap-2 text-sm font-bold uppercase tracking-widest">
+          <button onClick={() => router.push('/dashboard')} className="flex items-center gap-1 text-slate-500 hover:text-white transition-colors group">
+            <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+            Dashboard
+          </button>
+          <ChevronRight className="w-4 h-4 text-slate-700" />
+          <button onClick={() => router.push('/personas')} className="text-slate-500 hover:text-white transition-colors">
+            Personas
+          </button>
+          <ChevronRight className="w-4 h-4 text-slate-700" />
+          <span className="text-emerald-400">Profile</span>
+        </div>
+        <button 
+          onClick={() => router.back()}
+          className="flex items-center gap-2 text-slate-500 hover:text-white transition-colors text-sm font-bold uppercase tracking-widest group"
+        >
+          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+          Back
+        </button>
+      </div>
 
       <div className="premium-card p-10 relative overflow-hidden">
         {/* Background Accent */}

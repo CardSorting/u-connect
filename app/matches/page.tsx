@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Briefcase, Sparkles, ChevronRight, Target, Clock, AlertCircle, ArrowUpRight, LayoutDashboard, Shield, Zap, TrendingUp, CheckCircle2, AlertTriangle, ShieldCheck, Lock, Unlock } from 'lucide-react';
+import { Briefcase, Sparkles, ChevronRight, ChevronLeft, Target, Clock, AlertCircle, ArrowUpRight, LayoutDashboard, Shield, Zap, TrendingUp, CheckCircle2, AlertTriangle, ShieldCheck, Lock, Unlock } from 'lucide-react';
 import type { MatchResult, Persona } from '@/src/generated/client';
 
 type MatchWithPersona = MatchResult & {
@@ -65,9 +65,26 @@ export default function MatchesPage() {
   return (
     <div className="min-h-screen bg-black text-slate-200 p-8">
       <div className="max-w-6xl mx-auto">
-        <header className="mb-12">
-          <h1 className="text-4xl font-black tracking-tight text-white mb-2">Commercialization Stack</h1>
-          <p className="text-slate-500 font-medium">Evidence-based matching for the Utah deep-tech substrate.</p>
+        <header className="mb-12 flex justify-between items-end">
+          <div>
+            <div className="flex items-center gap-2 text-sm font-bold uppercase tracking-widest mb-4">
+              <button onClick={() => router.push('/dashboard')} className="flex items-center gap-1 text-slate-500 hover:text-white transition-colors group">
+                <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+                Dashboard
+              </button>
+              <ChevronRight className="w-4 h-4 text-slate-700" />
+              <span className="text-emerald-400">Matches</span>
+            </div>
+            <h1 className="text-4xl font-black tracking-tight text-white mb-2 uppercase">Commercialization Stack</h1>
+            <p className="text-slate-500 font-medium tracking-tight">Evidence-based matching for the Utah deep-tech substrate.</p>
+          </div>
+          <button
+            onClick={() => router.push('/dashboard')}
+            className="px-5 py-2 rounded-xl bg-white/5 hover:bg-white/10 transition-all border border-white/5 hover:border-white/10 flex items-center gap-2 text-sm font-bold uppercase tracking-widest"
+          >
+            <LayoutDashboard className="w-4 h-4" />
+            Dashboard
+          </button>
         </header>
 
         {matches.length === 0 ? (

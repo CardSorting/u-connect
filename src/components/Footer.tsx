@@ -1,9 +1,16 @@
 'use client';
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { Rocket, Globe, Mail, Shield, ExternalLink } from 'lucide-react';
 
 export default function Footer() {
+  const pathname = usePathname();
+
+  // ONLY show footer on the landing page
+  if (pathname !== '/') {
+    return null;
+  }
   const footerSections = [
     {
       title: 'Platform',

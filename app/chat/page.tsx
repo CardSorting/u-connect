@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { Send, User, Bot, Loader2, Sparkles, RefreshCcw, ChevronLeft, ShieldCheck, AlertTriangle, ShieldAlert, CheckCircle2, Info, FastForward, XCircle, Eye, Zap, BookOpen, Target, UserCheck, Compass } from 'lucide-react';
+import { Send, User, Bot, Loader2, Sparkles, RefreshCcw, ChevronLeft, ChevronRight, ShieldCheck, AlertTriangle, ShieldAlert, CheckCircle2, Info, FastForward, XCircle, Eye, Zap, BookOpen, Target, UserCheck, Compass } from 'lucide-react';
 import { readOpenAIStream } from '@/src/utils/openAIStream';
 import { ClientChatMessage } from '@/src/domain/chat/types';
 import type { Persona } from '@/src/generated/client';
@@ -132,20 +132,40 @@ function ChatContent() {
   }
 
   return (
-    <div className="flex flex-col h-[calc(100vh-64px)] bg-black text-slate-200">
-      {persona && (
-        <div className="px-6 py-2 border-b border-white/5 bg-white/[0.02] flex items-center justify-between">
-           <div className="flex items-center gap-2">
-            <Compass className="w-3 h-3 text-emerald-400" />
-            <span className="text-[10px] text-emerald-400 font-bold uppercase tracking-widest">
-              Journey: {persona.name}
+    <div className="flex flex-col h-screen bg-black text-slate-200">
+      <header className="h-16 border-b border-white/5 px-6 flex items-center justify-between bg-black/60 backdrop-blur-md sticky top-0 z-10">
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 text-[10px] sm:text-xs font-bold uppercase tracking-widest text-slate-500">
+            <button onClick={() => router.push('/dashboard')} className="flex items-center gap-1 hover:text-white transition-colors group">
+              <ChevronLeft className="w-3 h-3 group-hover:-translate-x-1 transition-transform" />
+              Dashboard
+            </button>
+            <ChevronRight className="w-3 h-3 text-slate-700" />
+            <span className="text-emerald-400 flex items-center gap-1">
+              <Compass className="w-3 h-3" />
+              Concierge
             </span>
           </div>
-          <div className="text-[10px] text-slate-500 font-medium">
-            Discovery Protocol Active
+          <div className="w-px h-4 bg-white/10 mx-2 hidden sm:block"></div>
+          <div>
+            <h1 className="font-bold tracking-tight text-white flex items-center gap-2 text-sm sm:text-base">
+              <Compass className="w-4 h-4 text-emerald-400" />
+              Discovery Concierge
+            </h1>
+            {persona && (
+              <p className="text-[10px] text-emerald-400 font-bold uppercase tracking-widest">
+                Journey: {persona.name}
+              </p>
+            )}
           </div>
         </div>
-      )}
+        <button 
+          onClick={() => router.push('/matches')}
+          className="px-4 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-lg shadow-emerald-500/20 transition-all"
+        >
+          View Matches
+        </button>
+      </header>
 
       <div className="flex-1 overflow-y-auto p-6 space-y-6 scrollbar-hide">
         <div className="max-w-3xl mx-auto space-y-6">

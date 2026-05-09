@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { User, Briefcase, GraduationCap, Microscope, Megaphone, Shield, ArrowRight, Plus } from 'lucide-react';
+import { User, Briefcase, GraduationCap, Microscope, Megaphone, Shield, ArrowRight, Plus, LayoutDashboard, ChevronLeft, ChevronRight } from 'lucide-react';
 import type { Persona } from '@/src/generated/client';
 
 const iconMap: Record<string, any> = {
@@ -58,18 +58,35 @@ export default function PersonasPage() {
     <div className="min-h-screen p-8 max-w-7xl mx-auto">
       <header className="mb-12 flex justify-between items-end">
         <div>
+          <div className="flex items-center gap-2 text-sm font-bold uppercase tracking-widest mb-4">
+            <button onClick={() => router.push('/dashboard')} className="flex items-center gap-1 text-slate-500 hover:text-white transition-colors group">
+              <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+              Dashboard
+            </button>
+            <ChevronRight className="w-4 h-4 text-slate-700" />
+            <span className="text-emerald-400">Personas</span>
+          </div>
           <h1 className="text-4xl font-black tracking-tight text-white mb-2">Discovery Personas</h1>
           <p className="text-slate-500 font-medium max-w-2xl">
             Select a commercialization profile to simulate a specific ecosystem journey.
           </p>
         </div>
-        <button
-          onClick={() => startChat()}
-          className="px-6 py-3 rounded-xl border border-white/5 bg-white/5 hover:bg-white/10 transition-all text-sm font-bold flex items-center gap-2"
-        >
-          <Plus className="w-4 h-4" />
-          Blank Discovery
-        </button>
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => router.push('/dashboard')}
+            className="px-5 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 transition-all border border-white/5 hover:border-white/10 flex items-center gap-2 text-sm font-bold uppercase tracking-widest"
+          >
+            <LayoutDashboard className="w-4 h-4" />
+            Dashboard
+          </button>
+          <button
+            onClick={() => startChat()}
+            className="px-6 py-3 rounded-xl border border-white/5 bg-white/5 hover:bg-white/10 transition-all text-sm font-bold flex items-center gap-2"
+          >
+            <Plus className="w-4 h-4" />
+            Blank Discovery
+          </button>
+        </div>
       </header>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

@@ -9,8 +9,8 @@ export default function Navbar() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
 
-  // Don't show navbar on landing page or login page
-  if (pathname === '/' || pathname === '/login') {
+  // ONLY show navbar on the landing page
+  if (pathname !== '/') {
     return null;
   }
 
@@ -27,7 +27,7 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex items-center gap-2">
-            <Link href="/dashboard" className="flex items-center gap-2 group">
+            <Link href="/" className="flex items-center gap-2 group">
               <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 group-hover:bg-emerald-500/20 transition-all">
                 <Rocket className="w-5 h-5" />
               </div>
