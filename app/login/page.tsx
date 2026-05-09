@@ -22,7 +22,22 @@ export default function LoginPage() {
       });
 
       if (res.ok) {
-        router.push('/dashboard');
+        // 1. Fetch latest conversation or create new one
+        const convRes = await fetch('/api/conversations');
+        const conversations = await convRes.json();
+        
+        if (conversations.length > 0) {
+          router.push(`/chat?conversationId=${conversations[0].id}`);
+        } else {
+          // Create new conversation
+          const createRes = await fetch('/api/conversations', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ personaId: undefined }),
+          });
+          const newConv = await createRes.json();
+          router.push(`/chat?conversationId=${newConv.id}`);
+        }
       } else {
         alert('Login failed');
       }
@@ -86,7 +101,7 @@ export default function LoginPage() {
                 <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
               ) : (
                 <>
-                  Continue to Dashboard
+                  Begin Discovery Intake
                   <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
                 </>
               )}
