@@ -69,44 +69,51 @@ export async function POST(req: Request) {
   // Prepare full prompt context
   let fullSystemPrompt = LAUNCHHIVE_SYSTEM_PROMPT;
 
-  // Intercept LinkedIn URLs and Resume Uploads to populate Persona and User profile
+  // Intercept LinkedIn URLs and Resume Uploads to populate Persona and User profile safely
   if (lastUserMessage && lastUserMessage.role === "user") {
     try {
+      // Helper to sanitize strings to prevent DB corruption (removes null bytes, limits length)
+      const sanitize = (text: string, maxLen: number) => text.replace(/\0/g, '').substring(0, maxLen).trim();
+
       // 1. Check for Resume Upload
       if (lastUserMessage.content.includes("[User uploaded resume:")) {
-        await prisma.user.update({
-          where: { id: user.id },
-          data: { resumeText: lastUserMessage.content }
-        });
+        const safeResume = sanitize(lastUserMessage.content, 50000); // 50k chars max
+        const safeBackground = sanitize(lastUserMessage.content, 2000); // 2k chars max for Persona
 
-        const backgroundData = lastUserMessage.content.substring(0, 2000); // Prevent overflow
-        if (!conversation.personaId) {
-          const newPersona = await prisma.persona.create({
-            data: {
-              name: user.name || "Unknown User",
-              personaType: "Uncategorized",
-              title: "Professional",
-              background: backgroundData,
-              skills: "Pending",
-              industries: "Pending",
-              goals: "Pending",
-            }
+        await prisma.$transaction(async (tx) => {
+          await tx.user.update({
+            where: { id: user.id },
+            data: { resumeText: safeResume }
           });
-          await prisma.conversation.update({
-            where: { id: conversationId },
-            data: { personaId: newPersona.id }
-          });
-        } else {
-          // Verify persona exists before updating
-          const existingPersona = await prisma.persona.findUnique({ where: { id: conversation.personaId } });
-          if (existingPersona) {
-            await prisma.persona.update({
-              where: { id: conversation.personaId },
-              data: { background: backgroundData }
+
+          const currentConv = await tx.conversation.findUnique({ where: { id: conversationId } });
+          if (!currentConv?.personaId) {
+            const newPersona = await tx.persona.create({
+              data: {
+                name: user.name || "Unknown User",
+                personaType: "Uncategorized",
+                title: "Professional",
+                background: safeBackground,
+                skills: "Pending",
+                industries: "Pending",
+                goals: "Pending",
+              }
             });
+            await tx.conversation.update({
+              where: { id: conversationId },
+              data: { personaId: newPersona.id }
+            });
+          } else {
+            const existingPersona = await tx.persona.findUnique({ where: { id: currentConv.personaId } });
+            if (existingPersona) {
+              await tx.persona.update({
+                where: { id: currentConv.personaId },
+                data: { background: safeBackground }
+              });
+            }
           }
-        }
-        logger.info("Saved resume text and populated persona", { userId: user.id });
+        });
+        logger.info("Saved resume text and populated persona atomically", { userId: user.id });
       }
 
       // 2. Check for LinkedIn URL
@@ -114,53 +121,62 @@ export async function POST(req: Request) {
       const urlMatch = lastUserMessage.content.match(linkedinRegex);
       
       if (urlMatch) {
-        // Save LinkedIn URL
-        await prisma.user.update({
-          where: { id: user.id },
-          data: { linkedinUrl: urlMatch[0] }
-        });
-        logger.info("Saved LinkedIn URL to user profile", { userId: user.id, url: urlMatch[0] });
+        const safeUrl = sanitize(urlMatch[0], 500);
 
         const { fetchLinkedInProfile } = await import("@/src/infrastructure/linkedin/fetchProfile");
-        const profileRes = await fetchLinkedInProfile(urlMatch[0]);
+        const profileRes = await fetchLinkedInProfile(safeUrl);
         
         if (profileRes.success && profileRes.data) {
-          const title = profileRes.data.headline?.substring(0, 255) || "Professional";
-          const backgroundData = (profileRes.data.summary || "") + "\n\nExperiences: " + JSON.stringify(profileRes.data.experiences).substring(0, 1000);
+          const title = sanitize(profileRes.data.headline || "Professional", 255);
+          const backgroundData = sanitize((profileRes.data.summary || "") + "\n\nExperiences: " + JSON.stringify(profileRes.data.experiences), 2000);
 
-          if (!conversation.personaId) {
-            const newPersona = await prisma.persona.create({
-              data: {
-                name: user.name || "Unknown User",
-                personaType: "Uncategorized",
-                title,
-                background: backgroundData,
-                skills: "Pending Extraction",
-                industries: "Deep Tech",
-                goals: "Ecosystem Integration"
-              }
+          await prisma.$transaction(async (tx) => {
+            await tx.user.update({
+              where: { id: user.id },
+              data: { linkedinUrl: safeUrl }
             });
-            await prisma.conversation.update({
-              where: { id: conversationId },
-              data: { personaId: newPersona.id }
-            });
-          } else {
-             // Verify persona exists before updating
-             const existingPersona = await prisma.persona.findUnique({ where: { id: conversation.personaId } });
-             if (existingPersona) {
-               await prisma.persona.update({
-                 where: { id: conversation.personaId },
-                 data: { title, background: backgroundData }
-               });
-             }
-          }
+
+            const currentConv = await tx.conversation.findUnique({ where: { id: conversationId } });
+            if (!currentConv?.personaId) {
+              const newPersona = await tx.persona.create({
+                data: {
+                  name: user.name || "Unknown User",
+                  personaType: "Uncategorized",
+                  title,
+                  background: backgroundData,
+                  skills: "Pending Extraction",
+                  industries: "Deep Tech",
+                  goals: "Ecosystem Integration"
+                }
+              });
+              await tx.conversation.update({
+                where: { id: conversationId },
+                data: { personaId: newPersona.id }
+              });
+            } else {
+               const existingPersona = await tx.persona.findUnique({ where: { id: currentConv.personaId } });
+               if (existingPersona) {
+                 await tx.persona.update({
+                   where: { id: currentConv.personaId },
+                   data: { title, background: backgroundData }
+                 });
+               }
+            }
+          });
+          logger.info("Saved LinkedIn URL and populated persona atomically", { userId: user.id, url: safeUrl });
 
           fullSystemPrompt += `\n\n[SYSTEM INJECTION: The user just provided their LinkedIn URL. Extracted profile data:\nHeadline: ${profileRes.data.headline}\nSummary: ${profileRes.data.summary}\nExperiences: ${JSON.stringify(profileRes.data.experiences)}\n\nCRITICAL INSTRUCTION: Analyze this data immediately. Acknowledge their specific background and move directly to Phase 2 (Categorization) and Phase 3 (Deep Investigation) based on this data.]`;
+        } else {
+          // If profile fetch fails, still try to save the URL to the user profile
+          await prisma.user.update({
+            where: { id: user.id },
+            data: { linkedinUrl: safeUrl }
+          });
         }
       }
     } catch (err) {
       // Catch all database/population errors so the chat stream does not crash
-      logger.error("Failed to populate user persona from intake data", { userId: user.id, error: err });
+      logger.error("Failed to populate user persona from intake data safely", { userId: user.id, error: err });
     }
   }
 
