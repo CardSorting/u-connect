@@ -121,6 +121,30 @@ export default function DashboardPage() {
           </button>
         </header>
 
+        <section className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
+          <ActionCard
+            icon={<MessageSquare className="w-5 h-5" />}
+            title="Continue Intake"
+            description="Answer one plain-English question at a time so the concierge can understand stage, blockers, proof, and your best next ask."
+            action="Open Concierge"
+            onClick={startNewIntake}
+          />
+          <ActionCard
+            icon={<Target className="w-5 h-5" />}
+            title="Review Matches"
+            description="See who is recommended, why they fit, what risks exist, and what needs approval before a reveal."
+            action="View Matches"
+            onClick={() => router.push('/matches')}
+          />
+          <ActionCard
+            icon={<ShieldCheck className="w-5 h-5" />}
+            title="CRM Handoff"
+            description="Confirmed profiles are prepared for Affinity deal flow and Squarespace lifecycle tracking automatically."
+            action="Admin View"
+            onClick={() => router.push('/admin/integrations')}
+          />
+        </section>
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
           
           {/* Section 1: Chat Sessions (Intakes) */}
@@ -210,5 +234,24 @@ export default function DashboardPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+function ActionCard({ icon, title, description, action, onClick }: { icon: React.ReactNode; title: string; description: string; action: string; onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      className="text-left rounded-2xl border border-slate-800 bg-slate-900/45 p-5 hover:border-emerald-500/30 hover:bg-slate-900/70 transition-all group"
+    >
+      <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center mb-4">
+        {icon}
+      </div>
+      <h3 className="text-white font-bold mb-2">{title}</h3>
+      <p className="text-sm text-slate-500 leading-relaxed mb-4">{description}</p>
+      <span className="text-xs font-bold uppercase tracking-widest text-emerald-400 flex items-center gap-2">
+        {action}
+        <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+      </span>
+    </button>
   );
 }

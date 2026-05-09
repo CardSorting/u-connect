@@ -5,6 +5,8 @@ import { getCurrentUser } from "@/src/infrastructure/auth/session";
 import { LAUNCHHIVE_SYSTEM_PROMPT } from "@/src/domain/launchhive/systemPrompt";
 import { z } from "zod";
 import { logger } from "@/src/utils/logger";
+import { syncPersonaToAffinity } from "@/src/lib/affinity";
+import { syncUserToSquarespaceContacts } from "@/src/lib/squarespace";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -114,6 +116,19 @@ export async function POST(req: Request) {
           }
         });
         logger.info("Saved resume text and populated persona atomically", { userId: user.id });
+        
+        // Deep Integration: Sync to Squarespace Contacts
+        const squarespaceResult = await syncUserToSquarespaceContacts({
+          firstName: user.name?.split(' ')[0] || "Unknown",
+          lastName: user.name?.split(' ').slice(1).join(' ') || "User",
+          email: user.email,
+          source: "intake",
+          lifecycleStage: "intake_started",
+          tags: ["Resume provided"],
+        });
+        if (!squarespaceResult.ok) {
+          logger.warn("Squarespace contact sync did not complete", { reason: squarespaceResult.reason, skipped: squarespaceResult.skipped });
+        }
       }
 
       // 2. Check for LinkedIn URL
@@ -164,6 +179,19 @@ export async function POST(req: Request) {
             }
           });
           logger.info("Saved LinkedIn URL and populated persona atomically", { userId: user.id, url: safeUrl });
+          
+          // Deep Integration: Sync to Affinity CRM
+          const affinityResult = await syncPersonaToAffinity({
+            first_name: user.name?.split(' ')[0] || "Unknown",
+            last_name: user.name?.split(' ').slice(1).join(' ') || "User",
+            emails: [user.email],
+            organization_names: profileRes.data.experiences?.[0]?.company ? [profileRes.data.experiences[0].company] : [],
+            linkedin_url: safeUrl,
+            tags: ["LinkedIn provided"],
+          });
+          if (!affinityResult.ok) {
+            logger.warn("Affinity person sync did not complete", { reason: affinityResult.reason, skipped: affinityResult.skipped });
+          }
 
           fullSystemPrompt += `\n\n[SYSTEM INJECTION: The user just provided their LinkedIn URL. Extracted profile data:\nHeadline: ${profileRes.data.headline}\nSummary: ${profileRes.data.summary}\nExperiences: ${JSON.stringify(profileRes.data.experiences)}\n\nCRITICAL INSTRUCTION: Analyze this data immediately. Acknowledge their specific background and move directly to Phase 2 (Categorization) and Phase 3 (Deep Investigation) based on this data.]`;
         } else {

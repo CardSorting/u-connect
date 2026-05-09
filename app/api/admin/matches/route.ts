@@ -1,6 +1,8 @@
 import { prisma } from '@/src/infrastructure/db/prisma';
 import { getCurrentUser } from '@/src/infrastructure/auth/session';
 import { NextResponse } from 'next/server';
+import { createAffinityOpportunity } from '@/src/lib/affinity';
+import { logger } from '@/src/utils/logger';
 
 /**
  * Admin Concierge Command Center API
@@ -46,13 +48,40 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
   }
 
-  await prisma.matchResult.update({
+  const updatedMatch = await prisma.matchResult.update({
     where: { id: matchId },
     data: { 
       status: newStatus,
       rationale: rationale || null,
     },
+    include: { user: true, persona: true }
   });
+
+  // Deep Integration: Push approved matches to Affinity Deal Flow
+  if (action === 'APPROVE') {
+    try {
+      const affinityResult = await createAffinityOpportunity({
+        name: `Match: ${updatedMatch.user.name} <> ${updatedMatch.persona?.name || updatedMatch.personaId}`,
+        list_id: parseInt(process.env.AFFINITY_DEAL_FLOW_LIST_ID || "0", 10),
+        person_ids: [], // Would map from a lookup table in a full prod scenario
+        organization_ids: [],
+        fields: {
+          launchHiveMatchId: updatedMatch.id,
+          score: updatedMatch.score,
+          readinessScore: updatedMatch.readinessScore,
+          status: newStatus,
+          rationale: rationale || null,
+        },
+      });
+      if (affinityResult.ok) {
+        logger.info("Successfully pushed approved match to Affinity CRM", { matchId, affinityId: affinityResult.id });
+      } else {
+        logger.warn("Approved match was not pushed to Affinity CRM", { matchId, reason: affinityResult.reason, skipped: affinityResult.skipped });
+      }
+    } catch (err) {
+      logger.error("Failed to push opportunity to Affinity CRM", { error: err, matchId });
+    }
+  }
 
   return NextResponse.json({ success: true, status: newStatus });
 }

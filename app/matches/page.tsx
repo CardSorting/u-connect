@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { Briefcase, Sparkles, ChevronRight, ChevronLeft, Target, Clock, AlertCircle, ArrowUpRight, LayoutDashboard, Shield, Zap, TrendingUp, CheckCircle2, AlertTriangle, ShieldCheck, Lock, Unlock } from 'lucide-react';
 import type { MatchResult, Persona } from '@/src/generated/client';
@@ -16,7 +16,7 @@ export default function MatchesPage() {
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
-  const fetchMatches = () => {
+  const fetchMatches = useCallback(() => {
     fetch('/api/matches')
       .then((res) => {
         if (res.status === 401) {
@@ -34,11 +34,11 @@ export default function MatchesPage() {
         setMatches(processed);
         setIsLoading(false);
       });
-  };
+  }, [router]);
 
   useEffect(() => {
     fetchMatches();
-  }, [router]);
+  }, [fetchMatches]);
 
   const handleReveal = async (matchId: string) => {
     try {
@@ -201,7 +201,7 @@ export default function MatchesPage() {
                               <div className="mt-1 w-1.5 h-1.5 rounded-full bg-emerald-500 group-hover/reason:scale-150 transition-transform" />
                               <div>
                                 <p className="text-[10px] font-bold text-emerald-400 uppercase tracking-tighter mb-0.5">{reason.category.replace('_', ' ')}</p>
-                                <p className="text-xs text-slate-300 leading-relaxed italic">"{reason.evidence}"</p>
+                                <p className="text-xs text-slate-300 leading-relaxed italic">&ldquo;{reason.evidence}&rdquo;</p>
                               </div>
                             </div>
                           </div>

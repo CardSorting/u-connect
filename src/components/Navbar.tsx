@@ -1,25 +1,42 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { Rocket, LayoutDashboard, Users, Target, MessageSquare, LogOut, Menu, X } from 'lucide-react';
+import { usePathname, useRouter } from 'next/navigation';
+import { Rocket, LayoutDashboard, Users, Target, MessageSquare, LogOut, Menu, X, Plus } from 'lucide-react';
 import { useState } from 'react';
 
 export default function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
 
-  // ONLY show navbar on the landing page
-  if (pathname !== '/') {
+  if (pathname.startsWith('/admin') || pathname.startsWith('/login')) {
     return null;
   }
 
+  const isLanding = pathname === '/';
   const navLinks = [
+    { name: 'Home', href: '/', icon: Rocket },
     { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-    { name: 'Personas', href: '/personas', icon: Users },
+    { name: 'Discovery', href: '/personas', icon: Users },
     { name: 'Matches', href: '/matches', icon: Target },
-    { name: 'Chat', href: '/chat', icon: MessageSquare },
   ];
+
+  const startNewIntake = async () => {
+    const res = await fetch('/api/conversations', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ personaId: undefined }),
+    });
+
+    if (res.ok) {
+      const conversation = await res.json();
+      router.push(`/chat?conversationId=${conversation.id}`);
+      setIsOpen(false);
+    } else {
+      router.push('/login');
+    }
+  };
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-white/5 bg-black/60 backdrop-blur-xl">
@@ -39,7 +56,7 @@ export default function Navbar() {
           <div className="hidden md:flex items-center gap-1">
             {navLinks.map((link) => {
               const Icon = link.icon;
-              const isActive = pathname.startsWith(link.href);
+              const isActive = link.href === '/' ? pathname === '/' : pathname.startsWith(link.href);
               return (
                 <Link
                   key={link.name}
@@ -59,16 +76,31 @@ export default function Navbar() {
 
           {/* Right Side: User / Logout */}
           <div className="hidden md:flex items-center gap-4 border-l border-white/5 pl-6 ml-2">
-             <button 
-              onClick={async () => {
-                await fetch('/api/auth/logout', { method: 'POST' });
-                window.location.href = '/';
-              }}
-              className="p-2 rounded-xl text-slate-500 hover:text-red-400 hover:bg-red-500/5 transition-all"
-              title="Logout"
-            >
-              <LogOut className="w-5 h-5" />
-            </button>
+            {isLanding ? (
+              <Link href="/login" className="px-4 py-2 rounded-xl bg-emerald-600 text-white text-sm font-bold hover:bg-emerald-500 transition-colors">
+                Sign In
+              </Link>
+            ) : (
+              <>
+                <button
+                  onClick={startNewIntake}
+                  className="px-4 py-2 rounded-xl bg-emerald-600 text-white text-sm font-bold hover:bg-emerald-500 transition-colors flex items-center gap-2"
+                >
+                  <Plus className="w-4 h-4" />
+                  New Intake
+                </button>
+                <button 
+                  onClick={async () => {
+                    await fetch('/api/auth/logout', { method: 'POST' });
+                    window.location.href = '/';
+                  }}
+                  className="p-2 rounded-xl text-slate-500 hover:text-red-400 hover:bg-red-500/5 transition-all"
+                  title="Logout"
+                >
+                  <LogOut className="w-5 h-5" />
+                </button>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -89,7 +121,7 @@ export default function Navbar() {
           <div className="px-4 py-6 space-y-3">
             {navLinks.map((link) => {
               const Icon = link.icon;
-              const isActive = pathname.startsWith(link.href);
+              const isActive = link.href === '/' ? pathname === '/' : pathname.startsWith(link.href);
               return (
                 <Link
                   key={link.name}
@@ -107,16 +139,36 @@ export default function Navbar() {
               );
             })}
             <div className="pt-4 mt-4 border-t border-white/5">
-              <button
-                onClick={async () => {
-                  await fetch('/api/auth/logout', { method: 'POST' });
-                  window.location.href = '/';
-                }}
-                className="w-full px-4 py-3 rounded-xl text-red-400 bg-red-500/5 font-bold flex items-center gap-3"
-              >
-                <LogOut className="w-5 h-5" />
-                Sign Out
-              </button>
+              {isLanding ? (
+                <Link
+                  href="/login"
+                  onClick={() => setIsOpen(false)}
+                  className="w-full px-4 py-3 rounded-xl text-white bg-emerald-600 font-bold flex items-center gap-3"
+                >
+                  <MessageSquare className="w-5 h-5" />
+                  Sign In
+                </Link>
+              ) : (
+                <div className="space-y-3">
+                  <button
+                    onClick={startNewIntake}
+                    className="w-full px-4 py-3 rounded-xl text-white bg-emerald-600 font-bold flex items-center gap-3"
+                  >
+                    <Plus className="w-5 h-5" />
+                    New Intake
+                  </button>
+                  <button
+                    onClick={async () => {
+                      await fetch('/api/auth/logout', { method: 'POST' });
+                      window.location.href = '/';
+                    }}
+                    className="w-full px-4 py-3 rounded-xl text-red-400 bg-red-500/5 font-bold flex items-center gap-3"
+                  >
+                    <LogOut className="w-5 h-5" />
+                    Sign Out
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>

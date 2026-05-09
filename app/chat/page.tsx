@@ -37,10 +37,19 @@ function ChatContent() {
   const currentStep = currentStepMatch ? parseInt(currentStepMatch) : 1;
 
   const wizardSteps = [
-    { num: 1, label: "Background" },
-    { num: 2, label: "Identity" },
-    { num: 3, label: "Deep Dive" },
-    { num: 4, label: "Goals" },
+    { num: 1, label: "Start", helper: "Resume or LinkedIn" },
+    { num: 2, label: "Role", helper: "Your best-fit category" },
+    { num: 3, label: "Dig Deeper", helper: "Stage, proof, blockers" },
+    { num: 4, label: "Goal", helper: "The right next ask" },
+    { num: 5, label: "Review", helper: "Confirm and match" },
+  ];
+
+  const currentStepLabel = wizardSteps.find((step) => step.num === currentStep)?.label ?? "Start";
+
+  const quickPrompts = [
+    "I'm at the prototype stage and need help finding the right first pilot partner.",
+    "The biggest blocker is customer discovery. I need introductions to people who can validate demand.",
+    "There may be regulatory or IP considerations, but I need help understanding the path.",
   ];
 
   useEffect(() => {
@@ -67,7 +76,7 @@ function ChatContent() {
           setPersona(data.persona);
           
           if (data.messages.length === 0) {
-             const greeting = "Welcome to LaunchHive! I'm your Discovery Concierge. I'll be guiding you through a brief onboarding process. To kick things off—could you either upload your resume or share a link to your LinkedIn profile? [STATUS: SCREENING_STEP_1]";
+             const greeting = "Welcome to LaunchHive. I'm your Discovery Concierge, and I'll keep this short and practical. To get started, upload your resume with the paperclip or paste your LinkedIn profile link so I can understand your background without making you retype it. [STATUS: SCREENING_STEP_1]";
              setMessages([{ role: 'assistant', content: greeting }]);
              fetch('/api/messages', {
               method: 'POST',
@@ -120,15 +129,6 @@ function ChatContent() {
         });
       });
 
-      // Handle Directives
-      if (assistantContent.includes('[DIRECTIVE: TRIGGER_MATCHING]') || assistantContent.includes('[DIRECTIVE: SHORT_CIRCUIT]')) {
-        fetch('/api/matches/run', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ conversationId }),
-        });
-      }
-
       await fetch('/api/messages', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -138,6 +138,36 @@ function ChatContent() {
           content: assistantContent
         })
       });
+
+      // Handle Directives
+      if (assistantContent.includes('[DIRECTIVE: TRIGGER_MATCHING]') || assistantContent.includes('[DIRECTIVE: SHORT_CIRCUIT]')) {
+        const matchRunRes = await fetch('/api/matches/run', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ conversationId }),
+        });
+
+        const matchRunData = await matchRunRes.json().catch(() => null);
+        const integrationCopy = matchRunData?.integrations
+          ? ` Affinity: ${matchRunData.integrations.affinity}. Squarespace: ${matchRunData.integrations.squarespace}.`
+          : '';
+        const matchMessage = matchRunRes.ok && matchRunData?.success
+          ? `Matches generated and queued for review.${integrationCopy} [STATUS: AUDIT_PASSED]`
+          : matchRunRes.ok
+            ? `I need one more prep pass before revealing matches. ${matchRunData?.recommendations?.join(' ') || 'Please clarify your exact ask and supporting evidence.'} [STATUS: SCREENING_STEP_3]`
+            : `I could not run matching yet: ${matchRunData?.error || 'matching service unavailable'}. [STATUS: SCREENING_STEP_5]`;
+
+        setMessages(prev => [...prev, { role: 'assistant', content: matchMessage }]);
+        await fetch('/api/messages', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            conversationId,
+            role: 'assistant',
+            content: matchMessage
+          })
+        });
+      }
 
     } catch (error: any) {
       console.error('Chat error:', error);
@@ -156,7 +186,7 @@ function ChatContent() {
   }
 
   return (
-    <div className="flex flex-col h-screen bg-black text-slate-200">
+    <div className="flex flex-col h-[calc(100vh-4rem)] bg-black text-slate-200">
       <header className="h-16 border-b border-white/5 px-6 flex items-center justify-between bg-black/60 backdrop-blur-md sticky top-0 z-10">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2 text-[10px] sm:text-xs font-bold uppercase tracking-widest text-slate-500">
@@ -191,9 +221,18 @@ function ChatContent() {
         </button>
       </header>
 
-      {/* Global Wizard Navigation (Industry Standard Pattern) */}
+      {/* Global Wizard Navigation */}
       <div className="bg-slate-900/60 border-b border-white/5 py-3 px-6 shrink-0 z-10 backdrop-blur-md relative shadow-xl">
-        <div className="max-w-3xl mx-auto">
+        <div className="max-w-5xl mx-auto">
+          <div className="mb-3 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-1">
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Guided Intake</p>
+              <p className="text-sm font-semibold text-white">Current step: <span className="text-emerald-300">{currentStepLabel}</span></p>
+            </div>
+            <p className="text-xs text-slate-500 max-w-md">
+              Answer one question at a time. LaunchHive uses this to find better matches and prepare the CRM handoff.
+            </p>
+          </div>
           <div className="flex items-center justify-between gap-2 relative">
             {/* Background Line */}
             <div className="absolute top-3 left-0 w-full h-0.5 bg-slate-800 -z-10 -translate-y-1/2" />
@@ -225,6 +264,9 @@ function ChatContent() {
                   }`}>
                     {step.label}
                   </span>
+                  <span className="hidden sm:block text-[9px] text-slate-600 mt-0.5 text-center leading-tight max-w-24">
+                    {step.helper}
+                  </span>
                 </div>
               );
             })}
@@ -233,7 +275,8 @@ function ChatContent() {
       </div>
 
       <div className="flex-1 overflow-y-auto p-6 space-y-6 scrollbar-hide">
-        <div className="max-w-3xl mx-auto space-y-6">
+        <div className="max-w-5xl mx-auto grid lg:grid-cols-[1fr_280px] gap-6">
+          <div className="space-y-6">
           {messages.map((m, i) => (
             <div 
               key={i} 
@@ -275,7 +318,8 @@ function ChatContent() {
                           "1": "Professional Grounding",
                           "2": "Identity & Categorization",
                           "3": "Deep Investigation",
-                          "4": "Ecosystem Synergy"
+                          "4": "Ecosystem Synergy",
+                          "5": "Review & Handoff"
                         };
                         const label = step ? labels[step] : "Onboarding";
                         
@@ -285,13 +329,13 @@ function ChatContent() {
                             <div className="flex-1 w-full">
                               <div className="flex justify-between items-end mb-1">
                                 <p className="text-[10px] font-bold text-blue-300 uppercase tracking-wider">Onboarding Phase</p>
-                                <p className="text-[10px] font-mono text-blue-400">{step}/4</p>
+                                <p className="text-[10px] font-mono text-blue-400">{step}/5</p>
                               </div>
                               <p className="text-xs text-slate-200 font-medium mb-3">{label}</p>
                               <div className="w-full h-1.5 bg-blue-900/40 rounded-full overflow-hidden">
                                 <div 
                                   className="h-full bg-blue-500 rounded-full transition-all duration-1000 ease-out" 
-                                  style={{ width: `${(parseInt(step || '1') / 4) * 100}%` }} 
+                                  style={{ width: `${(parseInt(step || '1') / 5) * 100}%` }} 
                                 />
                               </div>
                             </div>
@@ -350,6 +394,35 @@ function ChatContent() {
             </div>
           )}
           <div ref={messagesEndRef} />
+          </div>
+
+          <aside className="hidden lg:block space-y-4 sticky top-4 self-start">
+            <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-4">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-400 mb-2">Dig Deeper Checklist</p>
+              <div className="space-y-3 text-xs text-slate-400">
+                <ChecklistItem active={currentStep >= 1} label="Background source captured" />
+                <ChecklistItem active={currentStep >= 2} label="Role category confirmed" />
+                <ChecklistItem active={currentStep >= 3} label="Stage, blocker, proof, risk" />
+                <ChecklistItem active={currentStep >= 4} label="One clear ecosystem ask" />
+                <ChecklistItem active={currentStep >= 5} label="Summary ready for handoff" />
+              </div>
+            </div>
+            <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-4">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-3">Helpful Examples</p>
+              <div className="space-y-2">
+                {quickPrompts.map((prompt) => (
+                  <button
+                    key={prompt}
+                    type="button"
+                    onClick={() => setInput(prompt)}
+                    className="w-full rounded-xl border border-slate-800 bg-black/30 p-3 text-left text-xs leading-relaxed text-slate-300 hover:border-emerald-500/30 hover:text-white transition-colors"
+                  >
+                    {prompt}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </aside>
         </div>
       </div>
 
@@ -385,6 +458,15 @@ function ChatContent() {
           </button>
         </form>
       </div>
+    </div>
+  );
+}
+
+function ChecklistItem({ active, label }: { active: boolean; label: string }) {
+  return (
+    <div className="flex items-center gap-2">
+      <CheckCircle2 className={`w-4 h-4 ${active ? 'text-emerald-400' : 'text-slate-700'}`} />
+      <span className={active ? 'text-slate-200' : 'text-slate-500'}>{label}</span>
     </div>
   );
 }
