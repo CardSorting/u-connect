@@ -69,7 +69,7 @@ export async function POST(req: Request) {
   // Prepare full prompt context
   let fullSystemPrompt = LAUNCHHIVE_SYSTEM_PROMPT;
 
-  // Intercept LinkedIn URLs and Resume Uploads to save to User profile
+  // Intercept LinkedIn URLs and Resume Uploads to populate Persona and User profile
   if (lastUserMessage && lastUserMessage.role === "user") {
     // 1. Check for Resume Upload
     if (lastUserMessage.content.includes("[User uploaded resume:")) {
@@ -77,7 +77,31 @@ export async function POST(req: Request) {
         where: { id: user.id },
         data: { resumeText: lastUserMessage.content }
       });
-      logger.info("Saved resume text to user profile", { userId: user.id });
+
+      const backgroundData = lastUserMessage.content.substring(0, 2000); // Prevent overflow
+      if (!conversation.personaId) {
+        const newPersona = await prisma.persona.create({
+          data: {
+            name: user.name,
+            personaType: "Uncategorized",
+            title: "Professional",
+            background: backgroundData,
+            skills: "Pending",
+            industries: "Pending",
+            goals: "Pending",
+          }
+        });
+        await prisma.conversation.update({
+          where: { id: conversationId },
+          data: { personaId: newPersona.id }
+        });
+      } else {
+        await prisma.persona.update({
+          where: { id: conversation.personaId },
+          data: { background: backgroundData }
+        });
+      }
+      logger.info("Saved resume text and populated persona", { userId: user.id });
     }
 
     // 2. Check for LinkedIn URL
@@ -94,7 +118,34 @@ export async function POST(req: Request) {
 
       const { fetchLinkedInProfile } = await import("@/src/infrastructure/linkedin/fetchProfile");
       const profileRes = await fetchLinkedInProfile(urlMatch[0]);
+      
       if (profileRes.success && profileRes.data) {
+        const title = profileRes.data.headline?.substring(0, 255) || "Professional";
+        const backgroundData = (profileRes.data.summary || "") + "\n\nExperiences: " + JSON.stringify(profileRes.data.experiences).substring(0, 1000);
+
+        if (!conversation.personaId) {
+          const newPersona = await prisma.persona.create({
+            data: {
+              name: user.name,
+              personaType: "Uncategorized",
+              title,
+              background: backgroundData,
+              skills: "Pending Extraction",
+              industries: "Deep Tech",
+              goals: "Ecosystem Integration"
+            }
+          });
+          await prisma.conversation.update({
+            where: { id: conversationId },
+            data: { personaId: newPersona.id }
+          });
+        } else {
+          await prisma.persona.update({
+            where: { id: conversation.personaId },
+            data: { title, background: backgroundData }
+          });
+        }
+
         fullSystemPrompt += `\n\n[SYSTEM INJECTION: The user just provided their LinkedIn URL. Extracted profile data:\nHeadline: ${profileRes.data.headline}\nSummary: ${profileRes.data.summary}\nExperiences: ${JSON.stringify(profileRes.data.experiences)}\n\nCRITICAL INSTRUCTION: Analyze this data immediately. Acknowledge their specific background and move directly to Phase 2 (Categorization) and Phase 3 (Deep Investigation) based on this data.]`;
       }
     }
