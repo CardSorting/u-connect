@@ -123,6 +123,8 @@ exports.Prisma.UserScalarFieldEnum = {
   name: 'name',
   email: 'email',
   roleType: 'roleType',
+  linkedinUrl: 'linkedinUrl',
+  resumeText: 'resumeText',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };

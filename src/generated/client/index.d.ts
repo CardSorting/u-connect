@@ -1995,6 +1995,8 @@ export namespace Prisma {
     name: string | null
     email: string | null
     roleType: string | null
+    linkedinUrl: string | null
+    resumeText: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -2004,6 +2006,8 @@ export namespace Prisma {
     name: string | null
     email: string | null
     roleType: string | null
+    linkedinUrl: string | null
+    resumeText: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -2013,6 +2017,8 @@ export namespace Prisma {
     name: number
     email: number
     roleType: number
+    linkedinUrl: number
+    resumeText: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -2024,6 +2030,8 @@ export namespace Prisma {
     name?: true
     email?: true
     roleType?: true
+    linkedinUrl?: true
+    resumeText?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -2033,6 +2041,8 @@ export namespace Prisma {
     name?: true
     email?: true
     roleType?: true
+    linkedinUrl?: true
+    resumeText?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -2042,6 +2052,8 @@ export namespace Prisma {
     name?: true
     email?: true
     roleType?: true
+    linkedinUrl?: true
+    resumeText?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -2124,6 +2136,8 @@ export namespace Prisma {
     name: string
     email: string
     roleType: string | null
+    linkedinUrl: string | null
+    resumeText: string | null
     createdAt: Date
     updatedAt: Date
     _count: UserCountAggregateOutputType | null
@@ -2150,6 +2164,8 @@ export namespace Prisma {
     name?: boolean
     email?: boolean
     roleType?: boolean
+    linkedinUrl?: boolean
+    resumeText?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     sessions?: boolean | User$sessionsArgs<ExtArgs>
@@ -2166,6 +2182,8 @@ export namespace Prisma {
     name?: boolean
     email?: boolean
     roleType?: boolean
+    linkedinUrl?: boolean
+    resumeText?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["user"]>
@@ -2175,6 +2193,8 @@ export namespace Prisma {
     name?: boolean
     email?: boolean
     roleType?: boolean
+    linkedinUrl?: boolean
+    resumeText?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["user"]>
@@ -2184,11 +2204,13 @@ export namespace Prisma {
     name?: boolean
     email?: boolean
     roleType?: boolean
+    linkedinUrl?: boolean
+    resumeText?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "roleType" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "roleType" | "linkedinUrl" | "resumeText" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     sessions?: boolean | User$sessionsArgs<ExtArgs>
     conversations?: boolean | User$conversationsArgs<ExtArgs>
@@ -2216,6 +2238,8 @@ export namespace Prisma {
       name: string
       email: string
       roleType: string | null
+      linkedinUrl: string | null
+      resumeText: string | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["user"]>
@@ -2651,6 +2675,8 @@ export namespace Prisma {
     readonly name: FieldRef<"User", 'String'>
     readonly email: FieldRef<"User", 'String'>
     readonly roleType: FieldRef<"User", 'String'>
+    readonly linkedinUrl: FieldRef<"User", 'String'>
+    readonly resumeText: FieldRef<"User", 'String'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
   }
@@ -14994,6 +15020,8 @@ export namespace Prisma {
     name: 'name',
     email: 'email',
     roleType: 'roleType',
+    linkedinUrl: 'linkedinUrl',
+    resumeText: 'resumeText',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -15262,6 +15290,8 @@ export namespace Prisma {
     name?: StringFilter<"User"> | string
     email?: StringFilter<"User"> | string
     roleType?: StringNullableFilter<"User"> | string | null
+    linkedinUrl?: StringNullableFilter<"User"> | string | null
+    resumeText?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     sessions?: SessionListRelationFilter
@@ -15277,6 +15307,8 @@ export namespace Prisma {
     name?: SortOrder
     email?: SortOrder
     roleType?: SortOrderInput | SortOrder
+    linkedinUrl?: SortOrderInput | SortOrder
+    resumeText?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     sessions?: SessionOrderByRelationAggregateInput
@@ -15295,6 +15327,8 @@ export namespace Prisma {
     NOT?: UserWhereInput | UserWhereInput[]
     name?: StringFilter<"User"> | string
     roleType?: StringNullableFilter<"User"> | string | null
+    linkedinUrl?: StringNullableFilter<"User"> | string | null
+    resumeText?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     sessions?: SessionListRelationFilter
@@ -15310,6 +15344,8 @@ export namespace Prisma {
     name?: SortOrder
     email?: SortOrder
     roleType?: SortOrderInput | SortOrder
+    linkedinUrl?: SortOrderInput | SortOrder
+    resumeText?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: UserCountOrderByAggregateInput
@@ -15325,6 +15361,8 @@ export namespace Prisma {
     name?: StringWithAggregatesFilter<"User"> | string
     email?: StringWithAggregatesFilter<"User"> | string
     roleType?: StringNullableWithAggregatesFilter<"User"> | string | null
+    linkedinUrl?: StringNullableWithAggregatesFilter<"User"> | string | null
+    resumeText?: StringNullableWithAggregatesFilter<"User"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
   }
@@ -16230,6 +16268,8 @@ export namespace Prisma {
     name: string
     email: string
     roleType?: string | null
+    linkedinUrl?: string | null
+    resumeText?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionCreateNestedManyWithoutUserInput
@@ -16245,6 +16285,8 @@ export namespace Prisma {
     name: string
     email: string
     roleType?: string | null
+    linkedinUrl?: string | null
+    resumeText?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
@@ -16260,6 +16302,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     roleType?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    resumeText?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUpdateManyWithoutUserNestedInput
@@ -16275,6 +16319,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     roleType?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    resumeText?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -16290,6 +16336,8 @@ export namespace Prisma {
     name: string
     email: string
     roleType?: string | null
+    linkedinUrl?: string | null
+    resumeText?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -16299,6 +16347,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     roleType?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    resumeText?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -16308,6 +16358,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     roleType?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    resumeText?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -17426,6 +17478,8 @@ export namespace Prisma {
     name?: SortOrder
     email?: SortOrder
     roleType?: SortOrder
+    linkedinUrl?: SortOrder
+    resumeText?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -17435,6 +17489,8 @@ export namespace Prisma {
     name?: SortOrder
     email?: SortOrder
     roleType?: SortOrder
+    linkedinUrl?: SortOrder
+    resumeText?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -17444,6 +17500,8 @@ export namespace Prisma {
     name?: SortOrder
     email?: SortOrder
     roleType?: SortOrder
+    linkedinUrl?: SortOrder
+    resumeText?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -19626,6 +19684,8 @@ export namespace Prisma {
     name: string
     email: string
     roleType?: string | null
+    linkedinUrl?: string | null
+    resumeText?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     conversations?: ConversationCreateNestedManyWithoutUserInput
@@ -19640,6 +19700,8 @@ export namespace Prisma {
     name: string
     email: string
     roleType?: string | null
+    linkedinUrl?: string | null
+    resumeText?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     conversations?: ConversationUncheckedCreateNestedManyWithoutUserInput
@@ -19670,6 +19732,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     roleType?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    resumeText?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversations?: ConversationUpdateManyWithoutUserNestedInput
@@ -19684,6 +19748,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     roleType?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    resumeText?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversations?: ConversationUncheckedUpdateManyWithoutUserNestedInput
@@ -19824,6 +19890,8 @@ export namespace Prisma {
     name: string
     email: string
     roleType?: string | null
+    linkedinUrl?: string | null
+    resumeText?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionCreateNestedManyWithoutUserInput
@@ -19838,6 +19906,8 @@ export namespace Prisma {
     name: string
     email: string
     roleType?: string | null
+    linkedinUrl?: string | null
+    resumeText?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
@@ -19868,6 +19938,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     roleType?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    resumeText?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUpdateManyWithoutUserNestedInput
@@ -19882,6 +19954,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     roleType?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    resumeText?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -19896,6 +19970,8 @@ export namespace Prisma {
     name: string
     email: string
     roleType?: string | null
+    linkedinUrl?: string | null
+    resumeText?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionCreateNestedManyWithoutUserInput
@@ -19910,6 +19986,8 @@ export namespace Prisma {
     name: string
     email: string
     roleType?: string | null
+    linkedinUrl?: string | null
+    resumeText?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
@@ -20075,6 +20153,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     roleType?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    resumeText?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUpdateManyWithoutUserNestedInput
@@ -20089,6 +20169,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     roleType?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    resumeText?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -20267,6 +20349,8 @@ export namespace Prisma {
     name: string
     email: string
     roleType?: string | null
+    linkedinUrl?: string | null
+    resumeText?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionCreateNestedManyWithoutUserInput
@@ -20281,6 +20365,8 @@ export namespace Prisma {
     name: string
     email: string
     roleType?: string | null
+    linkedinUrl?: string | null
+    resumeText?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
@@ -20424,6 +20510,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     roleType?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    resumeText?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUpdateManyWithoutUserNestedInput
@@ -20438,6 +20526,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     roleType?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    resumeText?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -20703,6 +20793,8 @@ export namespace Prisma {
     name: string
     email: string
     roleType?: string | null
+    linkedinUrl?: string | null
+    resumeText?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionCreateNestedManyWithoutUserInput
@@ -20717,6 +20809,8 @@ export namespace Prisma {
     name: string
     email: string
     roleType?: string | null
+    linkedinUrl?: string | null
+    resumeText?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
@@ -20747,6 +20841,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     roleType?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    resumeText?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUpdateManyWithoutUserNestedInput
@@ -20761,6 +20857,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     roleType?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    resumeText?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -20775,6 +20873,8 @@ export namespace Prisma {
     name: string
     email: string
     roleType?: string | null
+    linkedinUrl?: string | null
+    resumeText?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionCreateNestedManyWithoutUserInput
@@ -20789,6 +20889,8 @@ export namespace Prisma {
     name: string
     email: string
     roleType?: string | null
+    linkedinUrl?: string | null
+    resumeText?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
@@ -20819,6 +20921,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     roleType?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    resumeText?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUpdateManyWithoutUserNestedInput
@@ -20833,6 +20937,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     roleType?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    resumeText?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput

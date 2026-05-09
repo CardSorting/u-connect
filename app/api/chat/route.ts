@@ -69,6 +69,37 @@ export async function POST(req: Request) {
   // Prepare full prompt context
   let fullSystemPrompt = LAUNCHHIVE_SYSTEM_PROMPT;
 
+  // Intercept LinkedIn URLs and Resume Uploads to save to User profile
+  if (lastUserMessage && lastUserMessage.role === "user") {
+    // 1. Check for Resume Upload
+    if (lastUserMessage.content.includes("[User uploaded resume:")) {
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { resumeText: lastUserMessage.content }
+      });
+      logger.info("Saved resume text to user profile", { userId: user.id });
+    }
+
+    // 2. Check for LinkedIn URL
+    const linkedinRegex = /https:\/\/(www\.)?linkedin\.com\/in\/[a-zA-Z0-9-]+\/?/;
+    const urlMatch = lastUserMessage.content.match(linkedinRegex);
+    
+    if (urlMatch) {
+      // Save LinkedIn URL
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { linkedinUrl: urlMatch[0] }
+      });
+      logger.info("Saved LinkedIn URL to user profile", { userId: user.id, url: urlMatch[0] });
+
+      const { fetchLinkedInProfile } = await import("@/src/infrastructure/linkedin/fetchProfile");
+      const profileRes = await fetchLinkedInProfile(urlMatch[0]);
+      if (profileRes.success && profileRes.data) {
+        fullSystemPrompt += `\n\n[SYSTEM INJECTION: The user just provided their LinkedIn URL. Extracted profile data:\nHeadline: ${profileRes.data.headline}\nSummary: ${profileRes.data.summary}\nExperiences: ${JSON.stringify(profileRes.data.experiences)}\n\nCRITICAL INSTRUCTION: Analyze this data immediately. Acknowledge their specific background and move directly to Phase 2 (Categorization) and Phase 3 (Deep Investigation) based on this data.]`;
+      }
+    }
+  }
+
   // Add demo startup context (Hardening: ensure personas are seeded)
   const startups = await prisma.persona.findMany({
     where: { personaType: "startup" },

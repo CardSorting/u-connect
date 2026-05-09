@@ -13,6 +13,8 @@ model User {
   name           String
   email          String             @unique
   roleType       String?
+  linkedinUrl    String?
+  resumeText     String?
   sessions       Session[]
   conversations  Conversation[]
   matches        MatchResult[]
