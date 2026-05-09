@@ -48,8 +48,8 @@ export default function PersonasPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin" />
+      <div className="min-h-screen flex items-center justify-center bg-black">
+        <div className="w-12 h-12 border-4 border-emerald-500/30 border-t-emerald-500 rounded-full animate-spin" />
       </div>
     );
   }
@@ -58,17 +58,17 @@ export default function PersonasPage() {
     <div className="min-h-screen p-8 max-w-7xl mx-auto">
       <header className="mb-12 flex justify-between items-end">
         <div>
-          <h1 className="text-4xl font-bold mb-3 tracking-tight">Select a Persona</h1>
-          <p className="text-slate-400 max-w-2xl">
-            Choose a test persona to see how LaunchHive handles different commercialization backgrounds, or start with a blank slate.
+          <h1 className="text-4xl font-black tracking-tight text-white mb-2">Discovery Personas</h1>
+          <p className="text-slate-500 font-medium max-w-2xl">
+            Select a commercialization profile to simulate a specific ecosystem journey.
           </p>
         </div>
         <button
           onClick={() => startChat()}
-          className="premium-button-secondary gap-2"
+          className="px-6 py-3 rounded-xl border border-white/5 bg-white/5 hover:bg-white/10 transition-all text-sm font-bold flex items-center gap-2"
         >
-          <Plus className="w-5 h-5" />
-          Start Blank
+          <Plus className="w-4 h-4" />
+          Blank Discovery
         </button>
       </header>
 
@@ -81,11 +81,11 @@ export default function PersonasPage() {
               className="premium-card flex flex-col h-full group"
             >
               <div className="flex items-start justify-between mb-4">
-                <div className="w-12 h-12 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center overflow-hidden">
+                <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center overflow-hidden">
                   {persona.avatarUrl ? (
                     <img src={persona.avatarUrl} alt={persona.name} className="w-full h-full object-cover" />
                   ) : (
-                    <Icon className="w-6 h-6 text-indigo-400" />
+                    <Icon className="w-6 h-6 text-emerald-400" />
                   )}
                 </div>
                 <span className="px-3 py-1 rounded-full bg-slate-800 text-xs font-medium text-slate-400 border border-slate-700 uppercase tracking-wider">
@@ -94,7 +94,7 @@ export default function PersonasPage() {
               </div>
 
               <h3 className="text-xl font-bold mb-1">{persona.name}</h3>
-              <p className="text-indigo-400 text-sm font-medium mb-3">{persona.title}</p>
+              <p className="text-emerald-400 text-sm font-medium mb-3">{persona.title}</p>
               
               <p className="text-slate-400 text-sm line-clamp-3 mb-6 flex-grow">
                 {persona.background}
@@ -103,7 +103,7 @@ export default function PersonasPage() {
               <div className="space-y-4">
                 <div className="flex flex-wrap gap-2">
                   {persona.industries.split(',').slice(0, 2).map((industry: string) => (
-                    <span key={industry} className="px-2 py-0.5 rounded-md bg-indigo-500/5 text-[10px] text-indigo-300 border border-indigo-500/10">
+                    <span key={industry} className="px-2 py-0.5 rounded-md bg-emerald-500/5 text-[10px] text-emerald-300 border border-emerald-500/10">
                       {industry.trim()}
                     </span>
                   ))}
@@ -111,7 +111,7 @@ export default function PersonasPage() {
 
                 <button
                   onClick={() => startChat(persona.id)}
-                  className="premium-button-primary w-full py-2.5 text-sm group-hover:shadow-[0_0_20px_rgba(99,102,241,0.2)]"
+                  className="premium-button-primary w-full py-2.5 text-sm group-hover:shadow-[0_0_20px_rgba(16,185,129,0.2)]"
                 >
                   Start as {persona.name.split(' ')[0]}
                   <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />

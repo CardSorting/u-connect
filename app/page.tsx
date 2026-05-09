@@ -9,14 +9,14 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen relative overflow-hidden">
       {/* Background Decor */}
-      <div className="absolute top-0 left-0 w-full h-full -z-10">
-        <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-indigo-600/10 blur-[120px] rounded-full" />
-        <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-purple-600/10 blur-[120px] rounded-full" />
+      <div className="absolute top-0 left-0 w-full h-full -z-10 bg-black">
+        <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-emerald-600/10 blur-[120px] rounded-full" />
+        <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-green-600/10 blur-[120px] rounded-full" />
       </div>
 
       {/* Hero Section */}
       <main className="max-w-7xl mx-auto px-6 pt-32 pb-20 text-center relative">
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-bold uppercase tracking-widest mb-8 animate-in fade-in slide-in-from-top-4 duration-1000">
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold uppercase tracking-widest mb-8 animate-in fade-in slide-in-from-top-4 duration-1000">
           <Sparkles className="w-4 h-4" />
           The Utah Deep-Tech Matchmaker
         </div>
@@ -69,29 +69,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="max-w-7xl mx-auto px-6 py-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6 text-slate-500 text-sm">
-        <div className="flex items-center gap-2">
-          <Rocket className="w-5 h-5 text-indigo-500" />
-          <span className="font-bold text-slate-300 tracking-tight">LaunchHive</span>
-        </div>
-        <p>© 2026 LaunchHive. Local Development MVP. Powered by Hermes.</p>
-        <div className="flex gap-8 items-center">
-          <button 
-            onClick={async () => {
-              if (confirm('Are you sure you want to reset all demo data? This will clear sessions, chats, and matches.')) {
-                await fetch('/api/admin/reset', { method: 'POST' });
-                window.location.reload();
-              }
-            }}
-            className="text-[10px] uppercase tracking-[0.2em] px-3 py-1 rounded border border-white/10 hover:bg-white/5 transition-colors"
-          >
-            Reset Demo
-          </button>
-          <a href="#" className="hover:text-white transition-colors">Privacy</a>
-          <a href="#" className="hover:text-white transition-colors">Terms</a>
-        </div>
-      </footer>
     </div>
   );
 }
@@ -108,7 +85,7 @@ function Stat({ label, value }: { label: string; value: string }) {
 function Feature({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) {
   return (
     <div className="premium-card hover:bg-white/[0.02]">
-      <div className="w-12 h-12 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 mb-6">
+      <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 mb-6">
         {icon}
       </div>
       <h3 className="text-xl font-bold mb-3">{title}</h3>

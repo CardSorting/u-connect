@@ -28,8 +28,8 @@ export default function PersonaProfilePage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin" />
+      <div className="min-h-screen flex items-center justify-center bg-black">
+        <div className="w-12 h-12 border-4 border-emerald-500/30 border-t-emerald-500 rounded-full animate-spin" />
       </div>
     );
   }
@@ -48,13 +48,13 @@ export default function PersonaProfilePage() {
 
       <div className="premium-card p-10 relative overflow-hidden">
         {/* Background Accent */}
-        <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/5 blur-[80px] rounded-full -mr-20 -mt-20" />
+        <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/5 blur-[80px] rounded-full -mr-20 -mt-20" />
         
         <div className="flex flex-col md:flex-row gap-10 relative z-10">
           {/* Left Side: Avatar & Core Info */}
           <div className="md:w-1/3 flex flex-col items-center text-center">
-            <div className="w-40 h-40 rounded-3xl bg-indigo-500/10 border border-indigo-500/20 p-1 mb-6 relative group">
-              <div className="w-full h-full rounded-2xl overflow-hidden border border-indigo-500/20 shadow-2xl">
+            <div className="w-40 h-40 rounded-3xl bg-emerald-500/10 border border-emerald-500/20 p-1 mb-6 relative group">
+              <div className="w-full h-full rounded-2xl overflow-hidden border border-emerald-500/20 shadow-2xl">
                 {persona.avatarUrl ? (
                   <img src={persona.avatarUrl} alt={persona.name} className="w-full h-full object-cover" />
                 ) : (
@@ -63,13 +63,13 @@ export default function PersonaProfilePage() {
                   </div>
                 )}
               </div>
-              <div className="absolute -bottom-3 -right-3 px-3 py-1 rounded-lg bg-indigo-600 text-[10px] font-bold uppercase tracking-widest shadow-xl">
+              <div className="absolute -bottom-3 -right-3 px-3 py-1 rounded-lg bg-emerald-600 text-[10px] font-bold uppercase tracking-widest shadow-xl">
                 {persona.personaType}
               </div>
             </div>
 
             <h1 className="text-3xl font-black mb-1">{persona.name}</h1>
-            <p className="text-indigo-400 font-bold text-sm mb-6 uppercase tracking-wider">{persona.title}</p>
+            <p className="text-emerald-400 font-bold text-sm mb-6 uppercase tracking-wider">{persona.title}</p>
             
             <div className="w-full space-y-3">
               <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-slate-900/50 border border-slate-800">
@@ -93,12 +93,12 @@ export default function PersonaProfilePage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
               <section>
                 <h3 className="text-sm font-bold text-slate-500 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
-                  <Briefcase className="w-4 h-4 text-indigo-400" />
+                  <Briefcase className="w-4 h-4 text-emerald-400" />
                   Expertise
                 </h3>
                 <div className="flex flex-wrap gap-2">
                   {persona.industries.split(',').map(tag => (
-                    <span key={tag} className="px-2 py-1 rounded-md bg-indigo-500/5 text-[10px] font-bold text-indigo-300 border border-indigo-500/10 uppercase">
+                    <span key={tag} className="px-2 py-1 rounded-md bg-emerald-500/5 text-[10px] font-bold text-emerald-300 border border-emerald-500/10 uppercase">
                       {tag.trim()}
                     </span>
                   ))}
@@ -107,7 +107,7 @@ export default function PersonaProfilePage() {
 
               <section>
                 <h3 className="text-sm font-bold text-slate-500 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
-                  <Target className="w-4 h-4 text-indigo-400" />
+                  <Target className="w-4 h-4 text-emerald-400" />
                   Mission
                 </h3>
                 <p className="text-sm text-slate-400 leading-relaxed">

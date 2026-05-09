@@ -56,31 +56,18 @@ export default function MatchesPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#020617]">
-        <div className="w-12 h-12 border-4 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin" />
+      <div className="min-h-screen flex items-center justify-center bg-black">
+        <div className="w-12 h-12 border-4 border-emerald-500/30 border-t-emerald-500 rounded-full animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#020617] text-slate-200 p-8">
+    <div className="min-h-screen bg-black text-slate-200 p-8">
       <div className="max-w-6xl mx-auto">
-        <header className="mb-12 flex justify-between items-end">
-          <div>
-            <div className="flex items-center gap-2 text-indigo-400 font-bold text-xs uppercase tracking-widest mb-2">
-              <ShieldCheck className="w-4 h-4" />
-              LaunchHive Authentic Matching V2
-            </div>
-            <h1 className="text-4xl font-bold tracking-tight text-white">Commercialization Stack</h1>
-            <p className="text-slate-400 mt-2">Evidence-based matching for the Utah deep-tech ecosystem.</p>
-          </div>
-          <button
-            onClick={() => router.push('/personas')}
-            className="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 transition-all border border-slate-700 flex items-center gap-2 text-sm font-medium"
-          >
-            <LayoutDashboard className="w-4 h-4" />
-            Dashboard
-          </button>
+        <header className="mb-12">
+          <h1 className="text-4xl font-black tracking-tight text-white mb-2">Commercialization Stack</h1>
+          <p className="text-slate-500 font-medium">Evidence-based matching for the Utah deep-tech substrate.</p>
         </header>
 
         {matches.length === 0 ? (
@@ -94,7 +81,7 @@ export default function MatchesPage() {
             </p>
             <button
               onClick={() => router.push('/chat')}
-              className="px-8 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold transition-all shadow-lg shadow-indigo-500/20"
+              className="px-8 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold transition-all shadow-lg shadow-emerald-500/20"
             >
               Begin Intake Protocol
             </button>
@@ -105,18 +92,17 @@ export default function MatchesPage() {
               <div key={match.id} className="rounded-2xl border border-slate-800 bg-slate-900/60 overflow-hidden backdrop-blur-md shadow-2xl transition-all hover:border-slate-700 group">
                 <div className="flex flex-col lg:flex-row">
                   {/* Left: Persona & Overall Score */}
-                  <div className="lg:w-80 p-8 border-b lg:border-b-0 lg:border-r border-slate-800 flex flex-col justify-between bg-indigo-500/[0.02]">
+                  <div className="lg:w-80 p-8 border-b lg:border-b-0 lg:border-r border-slate-800 flex flex-col justify-between bg-emerald-500/[0.02]">
                     <div>
                       <div className="flex items-center gap-2 mb-6">
-                        <span className={`px-2 py-1 rounded-md text-[10px] font-black uppercase tracking-tighter border ${
-                          match.status === 'REVEALED' ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'bg-indigo-500/10 border-indigo-500/30 text-indigo-400'
-                        }`}>
+                        <span className={`px-2 py-1 rounded-md text-[10px] font-black uppercase tracking-tighter border ${match.status === 'REVEALED' ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
+                          }`}>
                           {match.status.replace('_', ' ')}
                         </span>
                       </div>
-                      <h3 className="text-2xl font-bold text-white mb-1 group-hover:text-indigo-300 transition-colors">
-                        {['REVEALED', 'INTRO_REQUESTED', 'INTRO_ACCEPTED', 'MEETING_SCHEDULED', 'OUTCOME_RECORDED'].includes(match.status) 
-                          ? match.persona?.name 
+                      <h3 className="text-2xl font-bold text-white mb-1 group-hover:text-emerald-300 transition-colors">
+                        {['REVEALED', 'INTRO_REQUESTED', 'INTRO_ACCEPTED', 'MEETING_SCHEDULED', 'OUTCOME_RECORDED'].includes(match.status)
+                          ? match.persona?.name
                           : `Opportunity ${match.personaId.slice(-4).toUpperCase()}`}
                       </h3>
                       <p className="text-slate-400 text-sm mb-6">
@@ -124,41 +110,40 @@ export default function MatchesPage() {
                           ? match.persona?.title
                           : 'Masked Ecosystem Partner'}
                       </p>
-                      
+
                       <div className="space-y-4">
                         <div className="p-4 rounded-xl bg-slate-800/50 border border-slate-700">
                           <div className="flex justify-between items-end mb-2">
                             <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Match Score</span>
-                            <span className="text-2xl font-black text-indigo-400">{Math.round(match.score * 100)}%</span>
+                            <span className="text-2xl font-black text-emerald-400">{Math.round(match.score * 100)}%</span>
                           </div>
                           <div className="w-full h-1.5 bg-slate-700 rounded-full overflow-hidden">
-                            <div className="h-full bg-indigo-500 rounded-full transition-all duration-1000" style={{ width: `${match.score * 100}%` }} />
+                            <div className="h-full bg-emerald-500 rounded-full transition-all duration-1000" style={{ width: `${match.score * 100}%` }} />
                           </div>
                         </div>
                       </div>
                     </div>
 
                     <div className="mt-8 space-y-3">
-                      <button 
+                      <button
                         onClick={() => router.push(`/chat?conversationId=${match.conversationId}`)}
                         className="w-full py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs transition-all border border-slate-700"
                       >
                         Resume Conversation
                       </button>
-                      
+
                       {match.status === 'REVEALED' || match.status === 'INTRO_REQUESTED' || match.status === 'INTRO_ACCEPTED' ? (
-                        <button className="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs transition-all shadow-lg shadow-indigo-500/20">
+                        <button className="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-all shadow-lg shadow-emerald-500/20">
                           Initiate Handshake
                         </button>
                       ) : (
-                        <button 
+                        <button
                           onClick={() => handleReveal(match.id)}
                           disabled={match.status === 'PENDING_CONCIERGE_REVIEW'}
-                          className={`w-full py-3 rounded-xl font-bold text-xs transition-all border flex items-center justify-center gap-2 ${
-                            match.status === 'PENDING_CONCIERGE_REVIEW' 
-                            ? 'bg-slate-800 text-slate-500 border-slate-700 cursor-not-allowed'
-                            : 'bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 border-indigo-500/30'
-                          }`}
+                          className={`w-full py-3 rounded-xl font-bold text-xs transition-all border flex items-center justify-center gap-2 ${match.status === 'PENDING_CONCIERGE_REVIEW'
+                              ? 'bg-slate-800 text-slate-500 border-slate-700 cursor-not-allowed'
+                              : 'bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
+                            }`}
                         >
                           {match.status === 'PENDING_CONCIERGE_REVIEW' ? <Lock className="w-3 h-3" /> : <Unlock className="w-3 h-3" />}
                           {match.status === 'PENDING_CONCIERGE_REVIEW' ? 'In Concierge Review' : 'Request Reveal'}
@@ -196,9 +181,9 @@ export default function MatchesPage() {
                         {match.parsedReasons?.map((reason, i) => (
                           <div key={i} className="group/reason">
                             <div className="flex items-start gap-3">
-                              <div className="mt-1 w-1.5 h-1.5 rounded-full bg-indigo-500 group-hover/reason:scale-150 transition-transform" />
+                              <div className="mt-1 w-1.5 h-1.5 rounded-full bg-emerald-500 group-hover/reason:scale-150 transition-transform" />
                               <div>
-                                <p className="text-[10px] font-bold text-indigo-400 uppercase tracking-tighter mb-0.5">{reason.category.replace('_', ' ')}</p>
+                                <p className="text-[10px] font-bold text-emerald-400 uppercase tracking-tighter mb-0.5">{reason.category.replace('_', ' ')}</p>
                                 <p className="text-xs text-slate-300 leading-relaxed italic">"{reason.evidence}"</p>
                               </div>
                             </div>
@@ -240,7 +225,7 @@ function ScoreLayer({ label, score, icon }: { label: string; score: number; icon
   return (
     <div className="flex items-center justify-between group/layer">
       <div className="flex items-center gap-2">
-        <div className="w-6 h-6 rounded-md bg-slate-800 flex items-center justify-center text-slate-500 group-hover/layer:bg-indigo-500/20 group-hover/layer:text-indigo-400 transition-colors">
+        <div className="w-6 h-6 rounded-md bg-slate-800 flex items-center justify-center text-slate-500 group-hover/layer:bg-emerald-500/20 group-hover/layer:text-emerald-400 transition-colors">
           {icon}
         </div>
         <span className="text-[11px] font-medium text-slate-400 group-hover/layer:text-slate-200 transition-colors">{label}</span>

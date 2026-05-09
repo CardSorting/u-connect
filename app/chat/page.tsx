@@ -125,41 +125,27 @@ function ChatContent() {
 
   if (isInitializing) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#020617]">
-        <div className="w-12 h-12 border-4 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin" />
+      <div className="min-h-screen flex items-center justify-center bg-black">
+        <div className="w-12 h-12 border-4 border-emerald-500/30 border-t-emerald-500 rounded-full animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col h-screen bg-[#020617] text-slate-200">
-      <header className="h-16 border-b border-slate-800 px-6 flex items-center justify-between bg-slate-900/40 backdrop-blur-md sticky top-0 z-10">
-        <div className="flex items-center gap-4">
-          <button 
-            onClick={() => router.push('/dashboard')}
-            className="p-2 hover:bg-slate-800 rounded-lg transition-colors text-slate-400 hover:text-white"
-          >
-            <ChevronLeft className="w-5 h-5" />
-          </button>
-          <div>
-            <h1 className="font-bold tracking-tight text-white flex items-center gap-2 text-sm sm:text-base">
-              <Compass className="w-4 h-4 text-indigo-400" />
-              Discovery Concierge
-            </h1>
-            {persona && (
-              <p className="text-[10px] text-indigo-400 font-medium uppercase tracking-widest">
-                Journey: {persona.name}
-              </p>
-            )}
+    <div className="flex flex-col h-[calc(100vh-64px)] bg-black text-slate-200">
+      {persona && (
+        <div className="px-6 py-2 border-b border-white/5 bg-white/[0.02] flex items-center justify-between">
+           <div className="flex items-center gap-2">
+            <Compass className="w-3 h-3 text-emerald-400" />
+            <span className="text-[10px] text-emerald-400 font-bold uppercase tracking-widest">
+              Journey: {persona.name}
+            </span>
+          </div>
+          <div className="text-[10px] text-slate-500 font-medium">
+            Discovery Protocol Active
           </div>
         </div>
-        <button 
-          onClick={() => router.push('/matches')}
-          className="px-4 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold shadow-lg shadow-indigo-500/20 transition-all"
-        >
-          View Matches
-        </button>
-      </header>
+      )}
 
       <div className="flex-1 overflow-y-auto p-6 space-y-6 scrollbar-hide">
         <div className="max-w-3xl mx-auto space-y-6">
@@ -170,7 +156,7 @@ function ChatContent() {
             >
               <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border overflow-hidden ${
                 m.role === 'assistant' 
-                  ? 'bg-indigo-500/10 border-indigo-500/20 text-indigo-400' 
+                  ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' 
                   : 'bg-slate-800 border-slate-700 text-slate-400'
               }`}>
                 {m.role === 'assistant' ? (
@@ -184,7 +170,7 @@ function ChatContent() {
                 <div className={`px-5 py-3 rounded-2xl border ${
                   m.role === 'assistant'
                     ? 'bg-slate-900/60 border-slate-800 text-slate-200'
-                    : 'bg-indigo-600 border-indigo-500 text-white shadow-[0_0_20px_rgba(99,102,241,0.2)]'
+                    : 'bg-emerald-600 border-emerald-500 text-white shadow-[0_0_20px_rgba(16,185,129,0.2)]'
                 }`}>
                   <p className="text-sm leading-relaxed whitespace-pre-wrap">
                     {m.content
@@ -199,12 +185,12 @@ function ChatContent() {
                   {m.role === 'assistant' && (
                     <div className="space-y-3 mt-3">
                       {m.content.includes('[PREVIEW:') && (
-                        <div className="p-3 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center gap-3">
-                          <Eye className="w-4 h-4 text-indigo-400 shrink-0" />
+                        <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center gap-3">
+                          <Eye className="w-4 h-4 text-emerald-400 shrink-0" />
                           <div>
-                            <p className="text-[10px] font-bold text-indigo-300 uppercase tracking-wider">Opportunity Detected</p>
+                            <p className="text-[10px] font-bold text-emerald-300 uppercase tracking-wider">Opportunity Detected</p>
                             <p className="text-[10px] text-slate-400 leading-tight">
-                              Initial fit identified: <span className="text-indigo-200 font-bold">{m.content.match(/\[PREVIEW: (.*?)\]/)?.[1]}</span>
+                              Initial fit identified: <span className="text-emerald-200 font-bold">{m.content.match(/\[PREVIEW: (.*?)\]/)?.[1]}</span>
                             </p>
                           </div>
                         </div>
@@ -237,12 +223,12 @@ function ChatContent() {
           ))}
           {isLoading && (
             <div className="flex gap-4 animate-in fade-in duration-300">
-               <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
+               <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
                 <Loader2 className="w-6 h-6 animate-spin" />
               </div>
               <div className="px-5 py-3 rounded-2xl bg-slate-900/60 border border-slate-800 text-slate-400 italic text-sm">
                 <span className="flex items-center gap-2">
-                  <Compass className="w-3 h-3 text-indigo-400 animate-pulse" />
+                  <Compass className="w-3 h-3 text-emerald-400 animate-pulse" />
                   Mapping Utah deep-tech alignment...
                 </span>
               </div>
@@ -259,12 +245,12 @@ function ChatContent() {
             onChange={(e) => setInput(e.target.value)}
             placeholder={isLoading ? "Discovery in progress..." : "Tell me about your blocker..."}
             disabled={isLoading}
-            className="w-full bg-slate-900/80 border border-slate-800 rounded-2xl py-4 pl-5 pr-14 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all text-white placeholder:text-slate-600 shadow-2xl"
+            className="w-full bg-slate-900/80 border border-slate-800 rounded-2xl py-4 pl-5 pr-14 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all text-white placeholder:text-slate-600 shadow-2xl"
           />
           <button
             type="submit"
             disabled={isLoading || !input.trim()}
-            className="absolute right-2.5 top-1/2 -translate-y-1/2 w-10 h-10 rounded-xl bg-indigo-500 text-white flex items-center justify-center hover:bg-indigo-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="absolute right-2.5 top-1/2 -translate-y-1/2 w-10 h-10 rounded-xl bg-emerald-500 text-white flex items-center justify-center hover:bg-emerald-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Send className="w-5 h-5" />
           </button>
@@ -276,7 +262,7 @@ function ChatContent() {
 
 export default function ChatPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#020617]" />}>
+    <Suspense fallback={<div className="min-h-screen bg-black" />}>
       <ChatContent />
     </Suspense>
   );

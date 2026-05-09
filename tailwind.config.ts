@@ -10,16 +10,16 @@ const config: Config = {
     extend: {
       colors: {
         hive: {
-          charcoal: "#111827",
-          gold: "#F6B73C",
-          amber: "#FFDD8A",
-          cream: "#FFF8E7",
-          slate: "#293241",
-          honey: "#FFE2A8",
+          charcoal: "#000000",
+          emerald: "#10b981",
+          mint: "#34d399",
+          white: "#ffffff",
+          slate: "#111827",
+          forest: "#064e3b",
         },
       },
       boxShadow: {
-        glow: "0 24px 80px rgba(246, 183, 60, 0.22)",
+        glow: "0 24px 80px rgba(16, 185, 129, 0.22)",
       },
     },
   },
