@@ -11,7 +11,7 @@ function ChatContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const conversationId = searchParams.get('conversationId');
-  
+
   const [messages, setMessages] = useState<ClientChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -33,15 +33,13 @@ function ChatContent() {
     .map(m => m.content.match(/\[STATUS: SCREENING_STEP_(\d)\]/)?.[1])
     .filter(Boolean)
     .pop();
-  
+
   const currentStep = currentStepMatch ? parseInt(currentStepMatch) : 1;
 
   const wizardSteps = [
     { num: 1, label: "Start", helper: "Resume or LinkedIn" },
     { num: 2, label: "Role", helper: "Your best-fit category" },
     { num: 3, label: "Dig Deeper", helper: "Stage, proof, blockers" },
-    { num: 4, label: "Goal", helper: "The right next ask" },
-    { num: 5, label: "Review", helper: "Confirm and match" },
   ];
 
   const currentStepLabel = wizardSteps.find((step) => step.num === currentStep)?.label ?? "Start";
@@ -82,11 +80,11 @@ function ChatContent() {
         if (data) {
           setMessages(data.messages.map((m: any) => ({ role: m.role, content: m.content })));
           setPersona(data.persona);
-          
+
           if (data.messages.length === 0) {
-             const greeting = "Welcome to LaunchHive. I'm your Discovery Concierge, and I'll keep this short and practical. To get started, upload your resume with the paperclip or paste your LinkedIn profile link so I can understand your background without making you retype it. [STATUS: SCREENING_STEP_1]";
-             setMessages([{ role: 'assistant', content: greeting }]);
-             fetch('/api/messages', {
+            const greeting = "Welcome to LaunchHive. I'm your Discovery Concierge, and I'll keep this short and practical. To get started, upload your resume with the paperclip or paste your LinkedIn profile link so I can understand your background without making you retype it. [STATUS: SCREENING_STEP_1]";
+            setMessages([{ role: 'assistant', content: greeting }]);
+            fetch('/api/messages', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ conversationId, role: 'assistant', content: greeting })
@@ -163,7 +161,7 @@ function ChatContent() {
           ? `Matches generated and queued for review.${integrationCopy} [STATUS: AUDIT_PASSED]`
           : matchRunRes.ok
             ? `I need one more prep pass before revealing matches. ${matchRunData?.recommendations?.join(' ') || 'Please clarify your exact ask and supporting evidence.'} [STATUS: SCREENING_STEP_3]`
-            : `I could not run matching yet: ${matchRunData?.error || 'matching service unavailable'}. [STATUS: SCREENING_STEP_5]`;
+            : `I could not run matching yet: ${matchRunData?.error || 'matching service unavailable'}. [STATUS: SCREENING_STEP_3]`;
 
         setMessages(prev => [...prev, { role: 'assistant', content: matchMessage }]);
         await fetch('/api/messages', {
@@ -220,17 +218,15 @@ function ChatContent() {
                 return (
                   <div
                     key={step.num}
-                    className={`shrink-0 rounded-xl border px-3 py-2 flex items-center gap-2 transition-colors ${
-                      isCurrent
+                    className={`shrink-0 rounded-xl border px-3 py-2 flex items-center gap-2 transition-colors ${isCurrent
                         ? 'border-emerald-500/40 bg-emerald-500/10 text-white'
                         : isPast
                           ? 'border-emerald-500/20 bg-slate-900/70 text-slate-300'
                           : 'border-slate-800 bg-slate-950/60 text-slate-500'
-                    } px-2.5 py-1.5`}
+                      } px-2.5 py-1.5`}
                   >
-                    <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${
-                      isPast ? 'bg-emerald-500 text-white' : isCurrent ? 'bg-black text-emerald-300 border border-emerald-400' : 'bg-slate-900 text-slate-500 border border-slate-700'
-                    }`}>
+                    <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${isPast ? 'bg-emerald-500 text-white' : isCurrent ? 'bg-black text-emerald-300 border border-emerald-400' : 'bg-slate-900 text-slate-500 border border-slate-700'
+                      }`}>
                       {isPast ? <CheckCircle2 className="w-3 h-3" /> : step.num}
                     </span>
                     <span className="text-[10px] font-bold uppercase tracking-wider whitespace-nowrap">{step.label}</span>
@@ -251,28 +247,26 @@ function ChatContent() {
       <div className="flex-1 overflow-y-auto p-4 sm:p-6 scrollbar-hide">
         <div className="max-w-4xl mx-auto space-y-6">
           {messages.map((m, i) => (
-            <div 
-              key={i} 
+            <div
+              key={i}
               className={`flex gap-4 ${m.role === 'user' ? 'flex-row-reverse' : ''} animate-in fade-in slide-in-from-bottom-2 duration-300`}
             >
-              <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border overflow-hidden ${
-                m.role === 'assistant' 
-                  ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' 
+              <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border overflow-hidden ${m.role === 'assistant'
+                  ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
                   : 'bg-slate-800 border-slate-700 text-slate-400'
-              }`}>
+                }`}>
                 {m.role === 'assistant' ? (
                   <Bot className="w-6 h-6" />
                 ) : (
                   <User className="w-6 h-6" />
                 )}
               </div>
-              
+
               <div className={`flex flex-col max-w-[80%] ${m.role === 'user' ? 'items-end' : 'items-start'}`}>
-                <div className={`px-5 py-3 rounded-2xl border ${
-                  m.role === 'assistant'
+                <div className={`px-5 py-3 rounded-2xl border ${m.role === 'assistant'
                     ? 'bg-slate-900/60 border-slate-800 text-slate-200'
                     : 'bg-emerald-600 border-emerald-500 text-white shadow-[0_0_20px_rgba(16,185,129,0.2)]'
-                }`}>
+                  }`}>
                   <p className="text-sm leading-relaxed whitespace-pre-wrap">
                     {m.content
                       .replace(/\[STATUS:.*?\]/g, '')
@@ -281,7 +275,7 @@ function ChatContent() {
                       .replace(/\[PREVIEW:.*?\]/g, '')
                       .trim()}
                   </p>
-                  
+
                   {/* Demo-Optimized Signals */}
                   {m.role === 'assistant' && (
                     <div className="space-y-3 mt-3">
@@ -291,24 +285,22 @@ function ChatContent() {
                           "1": "Professional Grounding",
                           "2": "Identity & Categorization",
                           "3": "Deep Investigation",
-                          "4": "Ecosystem Synergy",
-                          "5": "Review & Handoff"
                         };
                         const label = step ? labels[step] : "Onboarding";
-                        
+
                         return (
                           <div className="p-4 rounded-xl bg-blue-500/10 border border-blue-500/20 flex gap-4 items-start w-full max-w-sm">
                             <Target className="w-5 h-5 text-blue-400 shrink-0 mt-0.5" />
                             <div className="flex-1 w-full">
                               <div className="flex justify-between items-end mb-1">
                                 <p className="text-[10px] font-bold text-blue-300 uppercase tracking-wider">Onboarding Phase</p>
-                                <p className="text-[10px] font-mono text-blue-400">{step}/5</p>
+                                <p className="text-[10px] font-mono text-blue-400">{step}/3</p>
                               </div>
                               <p className="text-xs text-slate-200 font-medium mb-3">{label}</p>
                               <div className="w-full h-1.5 bg-blue-900/40 rounded-full overflow-hidden">
-                                <div 
-                                  className="h-full bg-blue-500 rounded-full transition-all duration-1000 ease-out" 
-                                  style={{ width: `${(parseInt(step || '1') / 5) * 100}%` }} 
+                                <div
+                                  className="h-full bg-blue-500 rounded-full transition-all duration-1000 ease-out"
+                                  style={{ width: `${(Math.min(parseInt(step || '1'), 3) / 3) * 100}%` }}
                                 />
                               </div>
                             </div>
@@ -355,7 +347,7 @@ function ChatContent() {
           ))}
           {isLoading && (
             <div className="flex gap-4 animate-in fade-in duration-300">
-               <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+              <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
                 <Loader2 className="w-6 h-6 animate-spin" />
               </div>
               <div className="px-5 py-3 rounded-2xl bg-slate-900/60 border border-slate-800 text-slate-400 italic text-sm">
